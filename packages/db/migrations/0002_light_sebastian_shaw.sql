@@ -1,0 +1,1 @@
+ALTER TABLE `models` ADD `is_selected` integer DEFAULT false NOT NULL;
