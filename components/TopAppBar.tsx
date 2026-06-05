@@ -1,5 +1,5 @@
-import { ModelSelector } from './ModelSelector';
-import { ProjectSelector } from './ProjectSelector';
+import { ModelSelector } from "./ModelSelector";
+import { ProjectSelector } from "./ProjectSelector";
 
 export function TopAppBar() {
   return (
@@ -10,14 +10,14 @@ export function TopAppBar() {
         <ProjectSelector />
       </div>
       {/* Right: Actions */}
-      <div className="flex items-center gap-sm">
+      {/* <div className="flex items-center gap-sm">
         <button className="p-xs text-on-surface-variant hover:text-primary transition-colors hover:scale-95 duration-200">
           <span className="material-symbols-outlined">account_circle</span>
         </button>
         <button className="p-xs text-on-surface-variant hover:text-primary transition-colors hover:scale-95 duration-200">
           <span className="material-symbols-outlined">more_vert</span>
         </button>
-      </div>
+      </div> */}
     </header>
   );
 }

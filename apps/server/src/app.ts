@@ -6,6 +6,7 @@ import modelRoute from "./routes/model.route";
 import apiKeysRoute from "./routes/api-keys.route";
 import rulesRoute from "./routes/rules.route";
 import projectsRoute from "./routes/projects.route";
+import settingsRoute from "./routes/settings.route";
 import "dotenv/config";
 import { requestLogger } from "./middlewares/requestLogger";
 
@@ -28,5 +29,6 @@ app.route("/api/models", modelRoute);
 app.route("/api/api-keys", apiKeysRoute);
 app.route("/api/rules", rulesRoute);
 app.route("/api/projects", projectsRoute);
+app.route("/api/settings", settingsRoute);
 
 export default app;
