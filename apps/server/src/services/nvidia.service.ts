@@ -11,7 +11,6 @@ export const fetchNvidiaChatStream = async (
   if (!apiKey) {
     throw new Error("NVIDIA_API_KEY is missing");
   }
-  console.log("\n\n\n apikey", apiKey);
 
   const openai = new OpenAI({
     apiKey,
@@ -23,7 +22,7 @@ export const fetchNvidiaChatStream = async (
     messages,
     temperature: 0.2,
     top_p: 0.7,
-    max_tokens: 1024,
+    max_tokens: 4096,
     stream: true,
   };
 
