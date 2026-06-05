@@ -10,7 +10,19 @@ export function MessageInput() {
   const abortControllerRef = useRef<AbortController | null>(null);
   const router = useRouter();
   const queryClient = useQueryClient();
-  const { messages, addMessage, setIsStreaming, setStreamingContent, appendStreamingContent, isStreaming, streamingContent, activeModelId, activeConversationId, setActiveConversationId, activeProjectId } = useChatStore();
+  const {
+    messages,
+    addMessage,
+    setIsStreaming,
+    setStreamingContent,
+    appendStreamingContent,
+    isStreaming,
+    streamingContent,
+    activeModelId,
+    activeConversationId,
+    setActiveConversationId,
+    activeProjectId,
+  } = useChatStore();
 
   const handleInput = (e: ChangeEvent<HTMLTextAreaElement>) => {
     const target = e.target;
@@ -20,22 +32,6 @@ export function MessageInput() {
       target.style.height = "44px";
     }
   };
-
-  const streamMutation = useMutation({
-    mutationFn: async (payload: any) => {
-      const response = await fetch("http://localhost:3001/api/chat/stream", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(payload),
-        signal: abortControllerRef.current?.signal,
-      });
-      return response;
-    },
-    onSuccess: () => {
-      // Force a deliberate layout refresh for the sidebar
-      queryClient.invalidateQueries({ queryKey: ['conversations'] });
-    }
-  });
 
   const handleSubmit = async () => {
     if (!textareaRef.current) return;
@@ -47,47 +43,68 @@ export function MessageInput() {
 
     const newUserMessage = { role: "user" as const, content };
     addMessage(newUserMessage);
-    
+
     setIsStreaming(true);
     setStreamingContent("");
 
     abortControllerRef.current = new AbortController();
 
     try {
-      const response = await streamMutation.mutateAsync({ 
-        userMessage: content,
-        model: activeModelId,
-        conversationId: activeConversationId,
-        projectId: activeProjectId
+      const response = await fetch("http://localhost:3001/api/chat/stream", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          userMessage: content,
+          model: activeModelId,
+          conversationId: activeConversationId,
+          projectId: activeProjectId,
+        }),
+        signal: abortControllerRef.current?.signal,
       });
+
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`);
+      }
+
+      queryClient.invalidateQueries({ queryKey: ["conversations"] });
 
       if (response.body) {
         const reader = response.body.getReader();
         const decoder = new TextDecoder();
         let done = false;
-        
+        let buffer = "";
+
         while (!done) {
           const { value, done: doneReading } = await reader.read();
           done = doneReading;
+
           if (value) {
-            const chunk = decoder.decode(value, { stream: true });
-            const lines = chunk.split('\n');
+            buffer += decoder.decode(value, { stream: true });
+            const lines = buffer.split("\n");
+
+            // Keep the last incomplete line in the buffer
+            buffer = lines.pop() || "";
+
             for (const line of lines) {
-              if (line.startsWith('data: ')) {
-                const data = line.slice(6);
-                if (data && data !== '[DONE]') {
-                  try {
-                    const parsed = JSON.parse(data);
-                    if (parsed.type === 'conversation_id') {
+              const trimmedLine = line.trim();
+              if (trimmedLine.startsWith("data:")) {
+                const data = trimmedLine.slice(5).trim();
+
+                if (!data || data === "[DONE]") continue;
+
+                try {
+                  const parsed = JSON.parse(data);
+                  if (parsed.type === "conversation_id") {
+                    if (activeConversationId !== parsed.id) {
                       setActiveConversationId(parsed.id);
                       router.push(`/?id=${parsed.id}`);
-                    } else {
-                      appendStreamingContent(parsed);
                     }
-                  } catch (e) {
-                    // fall back to raw data if parsing fails
-                    appendStreamingContent(data);
+                  } else {
+                    appendStreamingContent(parsed);
                   }
+                } catch (e) {
+                  // Ensure raw string rendering falls back properly
+                  appendStreamingContent(data.replace(/^"|"$/g, ""));
                 }
               }
             }
@@ -95,7 +112,7 @@ export function MessageInput() {
         }
       }
     } catch (error: any) {
-      if (error.name === 'AbortError') {
+      if (error.name === "AbortError") {
         console.log("Generation stopped by user");
       } else {
         console.error("Stream error:", error);
@@ -111,7 +128,7 @@ export function MessageInput() {
   };
 
   const handleKeyDown = (e: KeyboardEvent<HTMLTextAreaElement>) => {
-    if (e.key === 'Enter' && !e.shiftKey) {
+    if (e.key === "Enter" && !e.shiftKey) {
       e.preventDefault();
       handleSubmit();
     }
@@ -136,11 +153,11 @@ export function MessageInput() {
             rows={1}
             disabled={isStreaming}
           />
-          {isStreaming ? (
+          {!isStreaming ? (
             <button
               onClick={() => abortControllerRef.current?.abort()}
               aria-label="Stop generation"
-              className="p-sm text-error hover:text-error-container bg-[#262626] hover:bg-[#333333] rounded-lg transition-colors flex-shrink-0 mb-[2px] mr-[2px]"
+              className="pt-sm px-sm text-error hover:text-error-container bg-[#262626] hover:bg-[#333333] rounded-lg transition-colors flex-shrink-0 self-center"
             >
               <span className="material-symbols-outlined text-[20px]">
                 stop
