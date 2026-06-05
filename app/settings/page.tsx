@@ -6,23 +6,25 @@ import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 export default function GeneralSettingsPage() {
   const queryClient = useQueryClient();
 
-  // Mock TanStack Query hooks for backend integration
+  // Fetch settings from API
   const { data: preferences, isLoading } = useQuery({
     queryKey: ['settings', 'general'],
     queryFn: async () => {
-      // Mock fetch
-      return new Promise((resolve) => setTimeout(() => resolve({
-        defaultModel: 'meta/llama-3.3-70b-instruct',
-        systemPrompt: 'You are a highly capable AI assistant.',
-        theme: 'dark'
-      }), 500));
+      const res = await fetch('http://localhost:3001/api/settings/general');
+      if (!res.ok) throw new Error('Failed to fetch settings');
+      return res.json();
     }
   });
 
   const saveMutation = useMutation({
     mutationFn: async (newPrefs: any) => {
-      // Mock save
-      return new Promise((resolve) => setTimeout(resolve, 800));
+      const res = await fetch('http://localhost:3001/api/settings/general', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(newPrefs)
+      });
+      if (!res.ok) throw new Error('Failed to save settings');
+      return res.json();
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['settings', 'general'] });
@@ -59,27 +61,6 @@ export default function GeneralSettingsPage() {
       </div>
 
       <form onSubmit={handleSubmit} className="flex flex-col gap-lg max-w-2xl">
-        {/* Default Model */}
-        <div className="flex flex-col gap-sm">
-          <label className="text-sm font-medium text-on-surface">Default Model</label>
-          <div className="relative">
-            <select
-              value={formData.defaultModel}
-              onChange={(e) => setFormData({ ...formData, defaultModel: e.target.value })}
-              className="w-full appearance-none bg-[#171717] border border-outline-variant rounded-md px-md py-sm text-sm text-on-surface focus:border-primary-container focus:outline-none transition-colors"
-            >
-              <option value="meta/llama-3.3-70b-instruct">meta/llama-3.3-70b-instruct</option>
-              <option value="deepseek-ai/deepseek-v4-pro">deepseek-ai/deepseek-v4-pro</option>
-              <option value="qwen/qwen3-coder-480b-a35b-instruct">qwen/qwen3-coder-480b-a35b-instruct</option>
-              <option value="mistralai/mistral-large-3-675b-instruct-2512">mistralai/mistral-large-3-675b-instruct-2512</option>
-            </select>
-            <span className="material-symbols-outlined absolute right-md top-1/2 -translate-y-1/2 text-on-surface-variant pointer-events-none text-[20px]">
-              expand_more
-            </span>
-          </div>
-          <p className="text-xs text-on-surface-variant mt-1">This model will be pre-selected when starting a new chat.</p>
-        </div>
-
         {/* System Prompt */}
         <div className="flex flex-col gap-sm">
           <label className="text-sm font-medium text-on-surface">Global System Prompt</label>

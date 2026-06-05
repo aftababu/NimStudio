@@ -2,6 +2,7 @@
 
 import { useEffect, useState, useRef } from "react";
 import { useChatStore } from "../lib/store";
+import { MarkdownRenderer } from "./markdown/MarkdownRenderer";
 
 export function ChatFeed() {
   const {
@@ -135,8 +136,8 @@ export function ChatFeed() {
                         NimStudio AI
                       </span>
                     </div>
-                    <div className="font-body-lg text-body-lg text-on-surface leading-relaxed whitespace-pre-wrap">
-                      {msg.content}
+                    <div className="w-full overflow-hidden">
+                      <MarkdownRenderer content={msg.content} />
                     </div>
                   </div>
                 );
@@ -155,8 +156,8 @@ export function ChatFeed() {
                 </span>
                 <span className="w-2 h-2 rounded-full bg-primary-container animate-pulse ml-2"></span>
               </div>
-              <div className="font-body-lg text-body-lg text-on-surface leading-relaxed whitespace-pre-wrap">
-                {streamingContent}
+              <div className="w-full overflow-hidden">
+                <MarkdownRenderer content={streamingContent} />
               </div>
             </div>
           )}
