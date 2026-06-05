@@ -7,6 +7,7 @@ import { useMutation, useQueryClient } from "@tanstack/react-query";
 
 export function MessageInput() {
   const textareaRef = useRef<HTMLTextAreaElement>(null);
+  const abortControllerRef = useRef<AbortController | null>(null);
   const router = useRouter();
   const queryClient = useQueryClient();
   const { messages, addMessage, setIsStreaming, setStreamingContent, appendStreamingContent, isStreaming, streamingContent, activeModelId, activeConversationId, setActiveConversationId, activeProjectId } = useChatStore();
@@ -26,6 +27,7 @@ export function MessageInput() {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(payload),
+        signal: abortControllerRef.current?.signal,
       });
       return response;
     },
@@ -48,6 +50,8 @@ export function MessageInput() {
     
     setIsStreaming(true);
     setStreamingContent("");
+
+    abortControllerRef.current = new AbortController();
 
     try {
       const response = await streamMutation.mutateAsync({ 
@@ -90,8 +94,12 @@ export function MessageInput() {
           }
         }
       }
-    } catch (error) {
-      console.error("Stream error:", error);
+    } catch (error: any) {
+      if (error.name === 'AbortError') {
+        console.log("Generation stopped by user");
+      } else {
+        console.error("Stream error:", error);
+      }
     } finally {
       const finalContent = useChatStore.getState().streamingContent;
       if (finalContent.trim()) {
@@ -128,16 +136,28 @@ export function MessageInput() {
             rows={1}
             disabled={isStreaming}
           />
-          <button
-            onClick={handleSubmit}
-            disabled={isStreaming}
-            aria-label="Send message"
-            className="p-sm text-on-surface-variant hover:text-primary-container bg-[#262626] hover:bg-[#333333] rounded-lg transition-colors flex-shrink-0 mb-[2px] mr-[2px]"
-          >
-            <span className="material-symbols-outlined text-[20px]">
-              arrow_upward
-            </span>
-          </button>
+          {isStreaming ? (
+            <button
+              onClick={() => abortControllerRef.current?.abort()}
+              aria-label="Stop generation"
+              className="p-sm text-error hover:text-error-container bg-[#262626] hover:bg-[#333333] rounded-lg transition-colors flex-shrink-0 mb-[2px] mr-[2px]"
+            >
+              <span className="material-symbols-outlined text-[20px]">
+                stop
+              </span>
+            </button>
+          ) : (
+            <button
+              onClick={handleSubmit}
+              disabled={isStreaming}
+              aria-label="Send message"
+              className="p-sm text-on-surface-variant hover:text-primary-container bg-[#262626] hover:bg-[#333333] rounded-lg transition-colors flex-shrink-0 mb-[2px] mr-[2px]"
+            >
+              <span className="material-symbols-outlined text-[20px]">
+                arrow_upward
+              </span>
+            </button>
+          )}
         </div>
         <div className="text-center mt-xs">
           <p className="font-label-caps text-[9px] text-[#474746] tracking-wider uppercase">
