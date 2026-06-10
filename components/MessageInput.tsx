@@ -5,6 +5,8 @@ import { useChatStore } from "../lib/store";
 import { useRouter } from "next/navigation";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 
+import { useShallow } from "zustand/react/shallow";
+
 export function MessageInput() {
   const [errorAlert, setErrorAlert] = useState<string | null>(null);
   const [isUploading, setIsUploading] = useState(false);
@@ -14,18 +16,28 @@ export function MessageInput() {
   const router = useRouter();
   const queryClient = useQueryClient();
   const {
-    messages,
     addMessage,
     setIsStreaming,
     setStreamingContent,
     appendStreamingContent,
     isStreaming,
-    streamingContent,
     activeModelId,
     activeConversationId,
     setActiveConversationId,
     activeProjectId,
-  } = useChatStore();
+  } = useChatStore(
+    useShallow((state) => ({
+      addMessage: state.addMessage,
+      setIsStreaming: state.setIsStreaming,
+      setStreamingContent: state.setStreamingContent,
+      appendStreamingContent: state.appendStreamingContent,
+      isStreaming: state.isStreaming,
+      activeModelId: state.activeModelId,
+      activeConversationId: state.activeConversationId,
+      setActiveConversationId: state.setActiveConversationId,
+      activeProjectId: state.activeProjectId,
+    })),
+  );
 
   const handleFileUpload = async (e: ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
@@ -38,10 +50,13 @@ export function MessageInput() {
     formData.append("file", file);
 
     try {
-      const response = await fetch(`http://localhost:3001/api/documents/${activeProjectId || 'default'}/upload`, {
-        method: "POST",
-        body: formData,
-      });
+      const response = await fetch(
+        `http://localhost:3001/api/documents/${activeProjectId || "default"}/upload`,
+        {
+          method: "POST",
+          body: formData,
+        },
+      );
 
       if (!response.ok) {
         throw new Error("Failed to upload document");
@@ -75,7 +90,12 @@ export function MessageInput() {
   const handleSubmit = async () => {
     if (!textareaRef.current) return;
     const content = textareaRef.current.value.trim();
-    if (!content || isStreaming || isUploading) return;
+    if (isStreaming || isUploading) return;
+    
+    if (!content) {
+      setErrorAlert("Please enter some text or attach a file.");
+      return;
+    }
 
     setErrorAlert(null);
 
@@ -105,7 +125,12 @@ export function MessageInput() {
       });
 
       if (!response.ok) {
-        throw new Error(`HTTP error! status: ${response.status}`);
+        let errorMessage = `HTTP error! status: ${response.status}`;
+        try {
+          const errData = await response.json();
+          if (errData.error) errorMessage = errData.error;
+        } catch (e) {}
+        throw new Error(errorMessage);
       }
 
       queryClient.invalidateQueries({ queryKey: ["conversations"] });
@@ -157,7 +182,16 @@ export function MessageInput() {
       if (error.name === "AbortError") {
         console.log("Generation stopped by user");
       } else {
-        console.error("Stream error:", error);
+        let displayError = error.message || "An unexpected error occurred";
+        
+        // Sanitize ugly database errors
+        if (displayError.includes("Failed query") || displayError.includes("SQLITE_CONSTRAINT") || displayError.includes("FOREIGN KEY constraint")) {
+          displayError = "Something went wrong saving to the database. Please check your project configuration.";
+        } else if (displayError.includes("Failed to fetch") || displayError.includes("NetworkError")) {
+          displayError = "Unable to connect to the server. Is the backend running?";
+        }
+
+        setErrorAlert(displayError);
       }
     } finally {
       const finalContent = useChatStore.getState().streamingContent;
@@ -187,16 +221,18 @@ export function MessageInput() {
               className="text-error hover:text-error-container p-1 rounded-md transition-colors"
               aria-label="Dismiss error"
             >
-              <span className="material-symbols-outlined text-[16px]">close</span>
+              <span className="material-symbols-outlined text-[16px]">
+                close
+              </span>
             </button>
           </div>
         )}
         <div className="flex items-end gap-sm bg-[#171717] border border-[#262626] rounded-xl p-xs focus-within:border-primary-container transition-colors shadow-[0_4px_24px_rgba(0,0,0,0.6)]">
-          <input 
-            type="file" 
-            ref={fileInputRef} 
-            onChange={handleFileUpload} 
-            className="hidden" 
+          <input
+            type="file"
+            ref={fileInputRef}
+            onChange={handleFileUpload}
+            className="hidden"
           />
           <button
             onClick={() => fileInputRef.current?.click()}
@@ -205,7 +241,9 @@ export function MessageInput() {
             className="p-sm text-on-surface-variant hover:text-on-surface hover:bg-[#262626] rounded-lg transition-colors flex-shrink-0 disabled:opacity-50"
           >
             {isUploading ? (
-              <span className="material-symbols-outlined animate-spin">sync</span>
+              <span className="material-symbols-outlined animate-spin">
+                sync
+              </span>
             ) : (
               <span className="material-symbols-outlined">add</span>
             )}
@@ -219,7 +257,7 @@ export function MessageInput() {
             rows={1}
             disabled={isStreaming || isUploading}
           />
-          {!isStreaming ? (
+          {isStreaming ? (
             <button
               onClick={() => abortControllerRef.current?.abort()}
               aria-label="Stop generation"

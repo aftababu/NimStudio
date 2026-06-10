@@ -1,85 +1,241 @@
-# **NimStudio 🌌**
+<div align="center">
 
-**A Self-Hosted, Open-Source AI Workspace for NVIDIA Models**
+# NimStudio
 
-NimStudio is not a simple wrapper or a generic chatbot clone. It is a fully-featured, production-quality AI workspace that runs entirely on your local machine. Built for developers, researchers, and AI power users, NimStudio provides a premium interface for interacting with NVIDIA-hosted AI models (and others) using your own API keys—with complete data ownership and zero cloud lock-in.
+**A localhost-first AI chat workspace for NVIDIA APIs.**
 
-## **✨ Core Features**
+Organize conversations into projects, manage multiple API keys, and maintain long-running context through a hybrid memory system — all while keeping your data stored locally.
 
-- **Bring-Your-Own-Key (BYOK):** No subscription fees. Add your own NVIDIA NIM API keys.
-- **Zero-Trust Security:** API keys are AES-256-GCM encrypted at rest inside your local SQLite database. They are never stored in plain text .env files.
-- **Hybrid Summary-Window Memory:** A highly optimized memory architecture that saves tokens and costs. It combines a strict sliding window for recent messages with asynchronous background summarization for long-term context retention.
-- **Dynamic Model Registry:** Automatically syncs with NVIDIA APIs to fetch and provide the latest available models (e.g., DeepSeek R1, Llama 3.1).
-- **Global Rules Engine:** Inject highly customizable, priority-based system prompts and behavioral rules into every conversation.
-- **Local-First Architecture:** Everything runs locally via SQLite. Complete privacy and offline management of your conversation history.
-- **Premium Developer UX:** Features a dark-first, highly opinionated "workstation" design language, complete with markdown rendering, syntax highlighting, and a responsive command-palette-style input.
+</div>
 
-## **🛠 Tech Stack**
+---
 
-NimStudio is built as a highly scalable monorepo, cleanly separating the client, server, and data layers.
+## Interface
 
-- **Workspace:** [Turborepo](https://turbo.build/) \+ pnpm
-- **Frontend (apps/web):** [Next.js 16](https://nextjs.org/) (App Router), React, Tailwind CSS, shadcn/ui.
-- **Frontend State:** Zustand (client UI state) \+ TanStack Query (server state & caching).
-- **Backend (apps/server):** [Hono](https://hono.dev/) (Node.js) for high-performance, independent REST routing and Server-Sent Events (SSE) streaming.
-- **Database (packages/db):** SQLite (better-sqlite3) for fast, synchronous local data storage, managed via [Drizzle ORM](https://orm.drizzle.team/).
+<p align="center">
+  <img src="https://i.postimg.cc/cCZB0FDc/localhost-3000-id-a3b39ebc-7593-4b5b-90d8-d8912b70b201.png" alt="NimStudio Interface" width="100%" />
+</p>
 
-## **🏗 Architecture Overview**
+## ✨ Features
 
-NimStudio follows a strict architectural boundary to ensure extensibility:
+- **NVIDIA API Integration** — Connect directly to NVIDIA-hosted models.
+- **Project-Based Organization** — Separate conversations by project.
+- **One API Key Per Project** — Isolate workflows and usage.
+- **Hybrid Memory System** — Summary memory + recent conversation window.
+- **Global Rules** — Apply custom instructions to every conversation.
+- **Real-Time Streaming** — Token-by-token responses.
+- **Local SQLite Storage** — Conversations, settings, and memory stay on your machine.
+- **Open Source & Self-Hosted** — No telemetry. No cloud dependency.
 
-1. **Frontend (Next.js):** Handles the UI and user interactions. Sends lightweight, strictly typed requests (e.g., { conversationId, userMessage }) to the backend. It does _not_ manage conversation history arrays to prevent network bloat.
-2. **Backend (Hono):** Intercepts requests, manages the SQLite database, and handles the heavy lifting. It dynamically constructs the context payload using the **Prompt Assembly Pipeline** before dispatching the request to the AI provider.
-3. **Provider Layer:** Abstracted so that while NVIDIA NIM is the primary target, adding local models (Ollama) or other cloud providers later is as simple as implementing a new interface class.
+---
 
-### **The Hybrid Summary-Window Memory**
+## 🎯 Philosophy
 
-NimStudio completely reinvents local chat memory. Instead of blindly sending your entire chat history back and forth until the context window breaks:
+Simple.
 
-- **Short-Term Window:** Only the last \~10 messages are sent raw to maintain exact formatting and immediate context.
-- **Long-Term Buffer:** As older messages fall out of the sliding window, a detached background worker quietly summarizes them using a faster, cheaper model. This rolling summary is injected directly into the system prompt, keeping token usage flat while maintaining infinite memory depth.
+- No agents.
+- No cloud sync.
+- No vendor lock-in.
 
-## **🚀 Getting Started**
+Just a fast local chat interface for NVIDIA models with better conversation organization and memory management.
 
-### **Prerequisites**
+---
 
-- Node.js (v20+)
-- pnpm (v11+)
+## 🏗️ Architecture
 
-### **Installation**
+```text
+Project
+   ↓
+API Key
+   ↓
+Conversations
+   ↓
+Messages
+```
 
-1. **Clone the repository:**
-   git clone \[https://github.com/aftababu/NimStudio.git\](https://github.com/aftababu/NimStudio.git)
-   cd NimStudio
+Each project owns its own API key and conversation space.
 
-2. **Install dependencies:**
-   pnpm install
+---
 
-3. **Initialize the Database:**
-   Push the Drizzle schema to create your local database.sqlite file.
-   cd packages/db
-   pnpm run db:push
+## 🛠️ Tech Stack
 
-4. **Start the Development Servers:**
-   From the root of the monorepo, start both the Next.js frontend and the Hono backend.
-   pnpm run dev
+| Frontend       | Backend    | Database    | AI          |
+| -------------- | ---------- | ----------- | ----------- |
+| Next.js        | Hono       | SQLite      | NVIDIA APIs |
+| React          | TypeScript | Drizzle ORM |             |
+| Zustand        |            |             |             |
+| TanStack Query |            |             |             |
+| Tailwind CSS   |            |             |             |
 
-5. **Access the UI:**
-   Open [http://localhost:3000](http://localhost:3000) in your browser.
-   _(Note: The Hono backend runs independently on http://localhost:3001)_
+---
 
-### **First Run Configuration**
+## 🚀 Quick Start
 
-1. Go to **Settings \> API Keys** and add your NVIDIA API key.
-2. Go to the main chat interface, click the **Model Selector**, and refresh the model list.
-3. Start chatting\!
+```bash
+git clone https://github.com/aftababu/NimStudio
 
-## **🤝 Contributing**
+cd NimStudio
 
-NimStudio is an open-source project. We welcome contributions, especially in expanding the **Provider Abstraction** layer (e.g., adding Anthropic, OpenAI, or Ollama support) or enhancing the UI components.
+pnpm install
 
-Please read the NVIDIA_AI_STUDIO_BLUEPRINT.md file in the root directory before contributing to ensure your PR aligns with the core architectural philosophy.
+pnpm dev
+```
 
-## **📝 License**
+Open:
 
-[MIT License](http://docs.google.com/LICENSE)
+```text
+http://localhost:3000
+```
+
+---
+
+# 📖 Usage
+
+## 1️⃣ Add an API Key
+
+By default, NimStudio creates a **Default** project.
+
+Navigate to:
+
+```text
+Settings → API Keys
+```
+
+Select the project and add your NVIDIA API key.
+
+<p align="center">
+  <img src="https://i.postimg.cc/B6BzGPqR/5.png" alt="Add API Key" width="100%" />
+</p>
+
+---
+
+## 2️⃣ Generate an NVIDIA API Key
+
+1. Visit:
+
+```text
+https://build.nvidia.com
+```
+
+2. Create and verify your account.
+3. Click your avatar (top-right).
+4. Open **API Keys**.
+5. Generate a new key.
+6. Copy the generated key.
+
+<p align="center">
+  <img src="https://i.postimg.cc/gj66Z8nS/6.png" alt="NVIDIA API Key" width="100%" />
+</p>
+
+---
+
+## 3️⃣ Add a Model
+
+Navigate to:
+
+```text
+Model Selector → Add Model
+```
+
+Enter the NVIDIA model ID.
+
+<p align="center">
+  <img src="https://i.postimg.cc/qqCpLGc4/3.png" alt="Add Model" width="100%" />
+</p>
+
+---
+
+## 4️⃣ Find a Model ID
+
+1. Visit:
+
+```text
+https://build.nvidia.com
+```
+
+2. Open the Models page.
+3. Select the model you want.
+4. Locate the model identifier in the code snippet.
+
+Example:
+
+```text
+deepseek-ai/deepseek-v4-flash
+```
+
+<p align="center">
+  <img src="https://i.postimg.cc/bwLdd3ms/4.png" alt="Model ID" width="100%" />
+</p>
+
+---
+
+## 5️⃣ Create a Project (Optional)
+
+Navigate to:
+
+```text
+Settings → Projects
+```
+
+Create a project.
+
+Then:
+
+```text
+Settings → API Keys
+```
+
+Assign an API key to that project.
+
+You can switch projects from:
+
+- Sidebar
+- Project dropdown
+
+<p align="center">
+  <img src="https://i.postimg.cc/fLSxx6Pr/7.png" alt="Create Project" width="100%" />
+</p>
+
+---
+
+## 📂 Project Structure
+
+```text
+Recent Conversations
+├── Chat A
+├── Chat B
+
+Default
+├── Chat 1
+├── Chat 2
+
+Research
+├── Chat 1
+├── Chat 2
+
+Work
+├── Chat 1
+└── Chat 2
+```
+
+---
+
+## 🔒 Local First
+
+All application data is stored locally:
+
+- Projects
+- Conversations
+- Memory Summaries
+- Global Rules
+- Models
+- API Keys (encrypted)
+- Settings
+
+Your data remains under your control.
+
+---
+
+## 📜 License
+
+MIT

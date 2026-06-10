@@ -39,7 +39,7 @@ export const useChatStore = create<ChatState>((set) => ({
   ],
   isStreaming: false,
   streamingContent: '',
-  activeModelId: null,
+  activeModelId: 'deepseek-ai/deepseek-v4-flash',
   activeConversationId: null,
   activeProjectId: 'default',
   sidebarWidth: 250,

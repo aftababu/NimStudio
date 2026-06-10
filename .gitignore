@@ -44,3 +44,9 @@ apps/server/dist
 apps/server/.env*
 apps/server/database.sqlite
 packages/db/database.sqlite
+packages/db/dist
+packages/db/node_modules
+packages/db/.env*
+NVIDIA_AI_STUDIO_BLUEPRINT.md
+test-*.js
+.next

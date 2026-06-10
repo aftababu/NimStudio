@@ -1,8 +1,50 @@
 import { db, conversations, messages, apiKeys } from '@nimstudio/db';
-import { eq, desc, asc, isNull } from 'drizzle-orm';
+import { eq, desc, asc, isNull, and, ne, count } from 'drizzle-orm';
 import crypto from 'crypto';
 import OpenAI from 'openai';
 import { decrypt } from '../utils/crypto';
+
+export async function getRecentMessagesForPrompt(conversationId: string, windowSize: number, summarizedCount: number) {
+  const totalRes = await db.select({ value: count() })
+    .from(messages)
+    .where(and(eq(messages.conversationId, conversationId), ne(messages.role, 'system')));
+  const totalNonSystem = totalRes[0]?.value || 0;
+
+  const unsummarizedCount = Math.max(0, totalNonSystem - windowSize - summarizedCount);
+  
+  let unsummarizedMessages = [];
+  if (unsummarizedCount > 0) {
+    unsummarizedMessages = await db.select({
+      role: messages.role,
+      content: messages.content
+    })
+    .from(messages)
+    .where(and(eq(messages.conversationId, conversationId), ne(messages.role, 'system')))
+    .orderBy(asc(messages.createdAt))
+    .limit(unsummarizedCount)
+    .offset(summarizedCount);
+  }
+
+  let windowedMessages = [];
+  if (totalNonSystem > 0) {
+    const rawWindow = await db.select({
+      role: messages.role,
+      content: messages.content
+    })
+    .from(messages)
+    .where(and(eq(messages.conversationId, conversationId), ne(messages.role, 'system')))
+    .orderBy(desc(messages.createdAt))
+    .limit(windowSize);
+    
+    windowedMessages = rawWindow.reverse();
+  }
+
+  return {
+    unsummarizedOutsideWindow: unsummarizedMessages,
+    windowedMessages: windowedMessages
+  };
+}
+
 
 export async function saveConversation(title: string = 'New Chat', projectId: string = 'default', modelId: string | null = null): Promise<string> {
   const id = crypto.randomUUID();
@@ -54,6 +96,10 @@ export async function saveMessage(conversationId: string, role: 'user' | 'assist
     role,
     content,
   });
+
+  await db.update(conversations)
+    .set({ updatedAt: new Date() })
+    .where(eq(conversations.id, conversationId));
 }
 
 export async function generateConversationTitle(conversationId: string, userMessageContent: string) {
@@ -97,11 +143,12 @@ export async function generateConversationTitle(conversationId: string, userMess
   }
 }
 
-export async function getRecentConversations(limitCount = 20) {
+export async function getRecentConversations(limitCount = 1000) {
   return await db.select({
     id: conversations.id,
     title: conversations.title,
     updatedAt: conversations.updatedAt,
+    projectId: conversations.projectId,
   })
   .from(conversations)
   .orderBy(desc(conversations.updatedAt))

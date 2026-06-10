@@ -56,49 +56,37 @@ chatRoute.post("/stream", async (c) => {
     // Save the incoming user message to the database immediately
     await saveMessage(conversationId, "user", userMessage);
 
-    // Fetch the full historical messages list from the database
-    const dbMessages = await getMessagesByConversationId(conversationId);
-
-    // Sanitize messages to prevent API rejecting empty assistant messages
-    const sanitizedMessages = dbMessages.filter(
-      (m: any) => typeof m.content === "string" && m.content.trim() !== "",
-    );
-
     // Dynamic Summary Window Logic
-    const { getConversationMemoryState } =
+    const { getConversationMemoryState, getRecentMessagesForPrompt } =
       await import("../services/chat.service");
     const { summarizeOlderMessages } =
       await import("../services/memory.service");
 
     const memoryState = await getConversationMemoryState(conversationId);
     const { summary, summarizedCount } = memoryState;
+    const WINDOW_SIZE = 10;
 
-    const nonSystemMessages = sanitizedMessages.filter(
-      (m: any) => m.role !== "system",
+    const { unsummarizedOutsideWindow, windowedMessages: rawWindowed } = 
+      await getRecentMessagesForPrompt(conversationId, WINDOW_SIZE, summarizedCount);
+
+    // Sanitize messages to prevent API rejecting empty assistant messages
+    const windowedMessages = rawWindowed.filter(
+      (m: any) => typeof m.content === "string" && m.content.trim() !== "",
     );
 
-    const WINDOW_SIZE = 10;
-    let windowedMessages = nonSystemMessages;
-
-    if (nonSystemMessages.length > WINDOW_SIZE) {
-      const messagesOutsideWindow = nonSystemMessages.slice(
-        0,
-        nonSystemMessages.length - WINDOW_SIZE,
+    if (unsummarizedOutsideWindow.length >= 4) {
+      // Background summarization task
+      const validUnsummarized = unsummarizedOutsideWindow.filter(
+        (m: any) => typeof m.content === "string" && m.content.trim() !== "",
       );
-      const unsummarizedOutsideWindow =
-        messagesOutsideWindow.slice(summarizedCount);
-
-      if (unsummarizedOutsideWindow.length >= 4) {
-        // Background summarization task
+      if (validUnsummarized.length > 0) {
         summarizeOlderMessages(
           conversationId,
           apiKey,
           summary,
-          unsummarizedOutsideWindow,
+          validUnsummarized,
         ).catch(console.error);
       }
-
-      windowedMessages = nonSystemMessages.slice(-WINDOW_SIZE);
     }
 
     // Document chunk injection

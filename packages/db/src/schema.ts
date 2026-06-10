@@ -1,4 +1,4 @@
-import { sqliteTable, text, integer } from "drizzle-orm/sqlite-core";
+import { sqliteTable, text, integer, index } from "drizzle-orm/sqlite-core";
 import { sql } from "drizzle-orm";
 
 export const projects = sqliteTable("projects", {
@@ -16,7 +16,9 @@ export const conversations = sqliteTable("conversations", {
   summarizedCount: integer("summarized_count").notNull().default(0),
   createdAt: integer("created_at", { mode: "timestamp" }).default(sql`(unixepoch())`).notNull(),
   updatedAt: integer("updated_at", { mode: "timestamp" }).default(sql`(unixepoch())`).notNull(),
-});
+}, (table) => ({
+  projectIdx: index("conversations_project_idx").on(table.projectId),
+}));
 
 export const messages = sqliteTable("messages", {
   id: text("id").primaryKey(),
@@ -24,16 +26,16 @@ export const messages = sqliteTable("messages", {
   role: text("role", { enum: ["user", "assistant", "system"] }).notNull(),
   content: text("content").notNull(),
   createdAt: integer("created_at", { mode: "timestamp" }).default(sql`(unixepoch())`).notNull(),
-});
+}, (table) => ({
+  conversationIdx: index("messages_conversation_idx").on(table.conversationId),
+}));
 
 export const apiKeys = sqliteTable("api_keys", {
   id: text("id").primaryKey(),
-  projectId: text("project_id").references(() => projects.id, { onDelete: "cascade" }),
-  label: text("label").notNull(),
-  encryptedKey: text("encrypted_key").notNull(),
-  iv: text("iv").notNull(),
-  authTag: text("auth_tag").notNull(),
-  hint: text("hint").notNull(),
+  projectId: text("project_id").notNull().unique().references(() => projects.id, { onDelete: "cascade" }),
+  encryptedKey: text("encrypted_key"),
+  iv: text("iv"),
+  authTag: text("auth_tag"),
   createdAt: integer("created_at", { mode: "timestamp" }).default(sql`(unixepoch())`).notNull(),
   updatedAt: integer("updated_at", { mode: "timestamp" }).default(sql`(unixepoch())`).notNull(),
 });
@@ -77,4 +79,6 @@ export const documentChunks = sqliteTable('document_chunks', {
   // Placeholder for embeddings, storing a JSON array string since libSQL has limited native vector type support right now
   embedding: text('embedding'),
   createdAt: integer('created_at', { mode: 'timestamp' }).notNull().default(sql`(unixepoch())`),
-});
+}, (table) => ({
+  documentIdx: index("document_chunks_document_idx").on(table.documentId),
+}));

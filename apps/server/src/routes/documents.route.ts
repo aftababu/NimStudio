@@ -18,7 +18,7 @@ router.post("/:projectId/upload", async (c) => {
 
     // Save file temporarily
     const buffer = await file.arrayBuffer();
-    const tempFileName = crypto.randomUUID() + "-" + file.name;
+    const tempFileName = crypto.randomUUID();
     const tempFilePath = path.join(process.cwd(), "uploads", tempFileName);
     
     // Ensure uploads directory exists

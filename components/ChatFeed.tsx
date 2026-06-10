@@ -2,19 +2,34 @@
 
 import { useEffect, useState, useRef, useLayoutEffect } from "react";
 import { useChatStore } from "../lib/store";
-import { MarkdownRenderer } from "./markdown/MarkdownRenderer";
+import { useShallow } from "zustand/react/shallow";
+import dynamic from "next/dynamic";
 import { ConversationNavigator } from "./chat/conversation-navigator";
 import { UserMessage } from "./chat/user-message";
+
+const MarkdownRenderer = dynamic(
+  () => import("./markdown/MarkdownRenderer").then((mod) => mod.MarkdownRenderer),
+  { ssr: false, loading: () => <div className="animate-pulse h-10 bg-surface-container-low rounded-md w-full opacity-50" /> }
+);
+
+import { StreamingMessage } from "./chat/streaming-message";
 
 export function ChatFeed() {
   const {
     messages,
     isStreaming,
-    streamingContent,
     activeConversationId,
     setMessages,
     setActiveMessageIndex,
-  } = useChatStore();
+  } = useChatStore(
+    useShallow((state) => ({
+      messages: state.messages,
+      isStreaming: state.isStreaming,
+      activeConversationId: state.activeConversationId,
+      setMessages: state.setMessages,
+      setActiveMessageIndex: state.setActiveMessageIndex,
+    }))
+  );
   const [isLoadingMessages, setIsLoadingMessages] = useState(false);
   const [chatNotFound, setChatNotFound] = useState(false);
   const [isAutoScrollEnabled, setIsAutoScrollEnabled] = useState(true);
@@ -70,10 +85,23 @@ export function ChatFeed() {
   }, [activeConversationId, setMessages]);
 
   useEffect(() => {
+    if (!scrollContainerRef.current) return;
+    
+    const observer = new MutationObserver(() => {
+      if (isAutoScrollEnabled && bottomRef.current) {
+        bottomRef.current.scrollIntoView({ behavior: "auto" });
+      }
+    });
+
+    observer.observe(scrollContainerRef.current, { childList: true, subtree: true, characterData: true });
+    
+    // Also scroll immediately on mount or dependency change
     if (isAutoScrollEnabled && bottomRef.current) {
       bottomRef.current.scrollIntoView({ behavior: "auto" });
     }
-  }, [streamingContent, messages, isAutoScrollEnabled]);
+
+    return () => observer.disconnect();
+  }, [isAutoScrollEnabled]);
 
   const handleScroll = () => {
     if (!scrollContainerRef.current) return;
@@ -257,24 +285,7 @@ export function ChatFeed() {
             })}
 
           {isStreaming && (
-            <div 
-              id={`message-${messages.length}`}
-              data-message-index={messages.length}
-              className="flex flex-col gap-xs bg-surface p-md border-l-2 border-primary-container rounded-r-DEFAULT shadow-[0_1px_6px_rgba(0,0,0,0.2)]"
-            >
-              <div className="flex items-center gap-sm text-primary-container mb-xs">
-                <span className="material-symbols-outlined text-[16px]">
-                  smart_toy
-                </span>
-                <span className="font-label-caps text-label-caps uppercase">
-                  NimStudio AI
-                </span>
-                <span className="w-2 h-2 rounded-full bg-primary-container animate-pulse ml-2"></span>
-              </div>
-              <div className="w-full overflow-hidden">
-                <MarkdownRenderer content={streamingContent} />
-              </div>
-            </div>
+            <StreamingMessage messageIndex={messages.length} />
           )}
 
           <div ref={bottomRef} className="h-4" />

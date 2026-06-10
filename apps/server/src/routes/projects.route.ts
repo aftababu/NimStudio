@@ -1,7 +1,7 @@
 import { Hono } from 'hono';
 import { db, projects } from '@nimstudio/db';
 import crypto from 'crypto';
-import { desc } from 'drizzle-orm';
+import { desc, eq } from 'drizzle-orm';
 
 const projectsRoute = new Hono();
 
@@ -32,6 +32,20 @@ projectsRoute.post('/', async (c) => {
     if (error.message?.includes('UNIQUE constraint failed')) {
       return c.json({ error: 'Project name must be unique' }, 409);
     }
+    return c.json({ error: error.message }, 500);
+  }
+});
+
+projectsRoute.delete('/:id', async (c) => {
+  try {
+    const id = c.req.param('id');
+    if (id === 'default') {
+      return c.json({ error: 'Cannot delete the Default project' }, 403);
+    }
+    
+    await db.delete(projects).where(eq(projects.id, id));
+    return c.json({ success: true });
+  } catch (error: any) {
     return c.json({ error: error.message }, 500);
   }
 });

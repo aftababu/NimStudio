@@ -134,6 +134,24 @@ export default function ProjectsSettingsPage() {
                     Created {new Date(project.createdAt).toLocaleDateString()}
                   </p>
                 </div>
+                {project.id !== 'default' && (
+                  <button
+                    onClick={async () => {
+                      if (window.confirm(`Delete project "${project.name}"? This will delete all its conversations and settings.`)) {
+                        try {
+                          const res = await fetch(`http://localhost:3001/api/projects/${project.id}`, { method: 'DELETE' });
+                          if (!res.ok) throw new Error('Failed to delete');
+                          queryClient.invalidateQueries({ queryKey: ["projects"] });
+                        } catch (e) {
+                          alert('Failed to delete project');
+                        }
+                      }
+                    }}
+                    className="text-red-400 hover:text-red-300 text-sm font-medium transition-colors"
+                  >
+                    Delete
+                  </button>
+                )}
               </div>
             ))}
           </div>

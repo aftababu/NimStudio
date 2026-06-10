@@ -1,6 +1,6 @@
 import { Hono } from 'hono';
 import { db, apiKeys } from '@nimstudio/db';
-import { eq, desc } from 'drizzle-orm';
+import { eq, desc, sql } from 'drizzle-orm';
 import { encrypt } from '../utils/crypto';
 import crypto from 'crypto';
 
@@ -10,9 +10,8 @@ apiKeysRoute.get('/', async (c) => {
   try {
     const keys = await db.select({
       id: apiKeys.id,
-      label: apiKeys.label,
-      hint: apiKeys.hint,
       projectId: apiKeys.projectId,
+      isConfigured: sql<boolean>`${apiKeys.encryptedKey} IS NOT NULL`,
       createdAt: apiKeys.createdAt,
     }).from(apiKeys).orderBy(desc(apiKeys.createdAt));
 
@@ -25,27 +24,39 @@ apiKeysRoute.get('/', async (c) => {
 
 apiKeysRoute.post('/', async (c) => {
   try {
-    const { label, key, projectId } = await c.req.json<{ label: string, key: string, projectId?: string }>();
-    if (!label || !key) return c.json({ error: 'Missing label or key' }, 400);
+    const { key, projectId } = await c.req.json<{ key: string, projectId: string }>();
+    if (!projectId || !key) return c.json({ error: 'Missing projectId or key' }, 400);
 
-    const hint = key.length > 4 ? `nvapi-***${key.slice(-4)}` : '***';
     const { encryptedKey, iv, authTag } = encrypt(key);
     
-    const newKey = {
-      id: crypto.randomUUID(),
-      label,
-      hint,
-      projectId: projectId || null,
-      encryptedKey,
-      iv,
-      authTag,
-      createdAt: new Date(),
-      updatedAt: new Date()
-    };
+    // UPSERT logic: check if the project already has an API key slot
+    const existing = await db.select().from(apiKeys).where(eq(apiKeys.projectId, projectId));
+    
+    if (existing.length > 0) {
+      await db.update(apiKeys)
+        .set({
+          encryptedKey,
+          iv,
+          authTag,
+          updatedAt: new Date()
+        })
+        .where(eq(apiKeys.projectId, projectId));
+        
+      return c.json({ success: true, id: existing[0].id });
+    } else {
+      const newKey = {
+        id: crypto.randomUUID(),
+        projectId,
+        encryptedKey,
+        iv,
+        authTag,
+        createdAt: new Date(),
+        updatedAt: new Date()
+      };
 
-    await db.insert(apiKeys).values(newKey);
-
-    return c.json({ success: true, id: newKey.id });
+      await db.insert(apiKeys).values(newKey);
+      return c.json({ success: true, id: newKey.id });
+    }
   } catch (error: any) {
     console.error('Error adding API key:', error);
     return c.json({ error: error.message }, 500);
