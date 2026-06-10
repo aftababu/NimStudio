@@ -233,7 +233,7 @@ chatRoute.get("/conversations/:id/messages", async (c) => {
 
 chatRoute.get("/conversations/:id/details", async (c) => {
   try {
-    console.log("\n\n conversation id");
+    // console.log("\n\n conversation id");
     const id = c.req.param("id");
     const details = await getConversationDetails(id);
     if (!details) {

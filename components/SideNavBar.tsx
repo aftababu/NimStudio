@@ -185,8 +185,9 @@ function SideNavBarContent() {
   };
 
   const handleNewChat = (projectId: string) => {
+    setActiveConversationId(null);
     setActiveProjectId(projectId);
-    router.push("/");
+    window.history.pushState({}, "", "/");
   };
 
   const toggleProject = (projectId: string) => {
@@ -284,7 +285,10 @@ function SideNavBarContent() {
       />
       {/* Header / Logo area */}
       <div
-        onClick={() => router.push("/")}
+        onClick={() => {
+          setActiveConversationId(null);
+          window.history.pushState({}, "", "/");
+        }}
         className="py-2 px-4 border-b border-outline-variant flex justify-between items-center gap-sm cursor-pointer"
       >
         <div className="w-18 h-14 rounded-DEFAULT flex items-center justify-center text-on-primary">

@@ -26,6 +26,7 @@ Organize conversations into projects, manage multiple API keys, and maintain lon
 - **Real-Time Streaming** — Token-by-token responses.
 - **Local SQLite Storage** — Conversations, settings, and memory stay on your machine.
 - **Open Source & Self-Hosted** — No telemetry. No cloud dependency.
+- **MarkItDown** - Upload files by converting them to Markdown.
 
 ---
 
@@ -71,14 +72,34 @@ Each project owns its own API key and conversation space.
 
 ## 🚀 Quick Start
 
+### PNPM (Recommended)
+
 ```bash
 git clone https://github.com/aftababu/NimStudio
-
 cd NimStudio
 
 pnpm install
+pnpm build
+pnpm start
+```
 
-pnpm dev
+### NPM Users
+
+```bash
+npm install -g pnpm
+```
+
+#### **If you want to upload files**
+
+```
+python -m venv apps/server/venv
+
+source apps/server/venv/bin/activate
+# Windows:
+# apps/server/venv/Scripts/activate
+
+pip install -r apps/server/requirements.txt
+pnpm start
 ```
 
 Open:
