@@ -1,6 +1,7 @@
 import { drizzle } from "drizzle-orm/libsql";
 import { createClient } from "@libsql/client";
 import * as schema from "./schema";
+import path from "path";
 
 const dbPath = path.resolve(process.cwd(), "packages/db/database.sqlite");
 
