@@ -3,6 +3,7 @@ import { Geist, JetBrains_Mono } from "next/font/google";
 import "./globals.css";
 import QueryProvider from "../lib/QueryProvider";
 import { ThemeProvider } from "@/components/ThemeProvider";
+import { WelcomePopup } from "@/components/WelcomePopup";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -40,6 +41,7 @@ export default function RootLayout({
         <ThemeProvider attribute="class" defaultTheme="system" enableSystem disableTransitionOnChange>
           <QueryProvider>
             {children}
+            <WelcomePopup />
           </QueryProvider>
         </ThemeProvider>
       </body>
