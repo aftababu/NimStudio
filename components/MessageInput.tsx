@@ -1,11 +1,14 @@
 "use client";
 
-import { useRef, ChangeEvent, KeyboardEvent } from "react";
+import { useRef, ChangeEvent, KeyboardEvent, useState } from "react";
 import { useChatStore } from "../lib/store";
 import { useRouter } from "next/navigation";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 
 export function MessageInput() {
+  const [errorAlert, setErrorAlert] = useState<string | null>(null);
+  const [isUploading, setIsUploading] = useState(false);
+  const fileInputRef = useRef<HTMLInputElement>(null);
   const textareaRef = useRef<HTMLTextAreaElement>(null);
   const abortControllerRef = useRef<AbortController | null>(null);
   const router = useRouter();
@@ -24,6 +27,42 @@ export function MessageInput() {
     activeProjectId,
   } = useChatStore();
 
+  const handleFileUpload = async (e: ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+
+    setIsUploading(true);
+    setErrorAlert(null);
+
+    const formData = new FormData();
+    formData.append("file", file);
+
+    try {
+      const response = await fetch(`http://localhost:3001/api/documents/${activeProjectId || 'default'}/upload`, {
+        method: "POST",
+        body: formData,
+      });
+
+      if (!response.ok) {
+        throw new Error("Failed to upload document");
+      }
+
+      const result = await response.json();
+      if (result.success && result.data?.filename) {
+        if (textareaRef.current) {
+          const appendText = ` @${result.data.filename} `;
+          textareaRef.current.value += appendText;
+          textareaRef.current.focus();
+        }
+      }
+    } catch (err: any) {
+      setErrorAlert(err.message || "Upload failed");
+    } finally {
+      setIsUploading(false);
+      if (fileInputRef.current) fileInputRef.current.value = "";
+    }
+  };
+
   const handleInput = (e: ChangeEvent<HTMLTextAreaElement>) => {
     const target = e.target;
     target.style.height = "auto";
@@ -36,7 +75,9 @@ export function MessageInput() {
   const handleSubmit = async () => {
     if (!textareaRef.current) return;
     const content = textareaRef.current.value.trim();
-    if (!content || isStreaming) return;
+    if (!content || isStreaming || isUploading) return;
+
+    setErrorAlert(null);
 
     textareaRef.current.value = "";
     textareaRef.current.style.height = "44px";
@@ -50,14 +91,15 @@ export function MessageInput() {
     abortControllerRef.current = new AbortController();
 
     try {
+      const state = useChatStore.getState();
       const response = await fetch("http://localhost:3001/api/chat/stream", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
           userMessage: content,
-          model: activeModelId,
-          conversationId: activeConversationId,
-          projectId: activeProjectId,
+          model: state.activeModelId,
+          conversationId: state.activeConversationId,
+          projectId: state.activeProjectId,
         }),
         signal: abortControllerRef.current?.signal,
       });
@@ -137,12 +179,36 @@ export function MessageInput() {
   return (
     <div className="absolute bottom-0 left-0 w-full p-lg bg-gradient-to-t from-[#0A0A0A] via-[#0A0A0A] to-transparent pt-xl z-10">
       <div className="max-w-3xl mx-auto relative">
+        {errorAlert && (
+          <div className="mb-2 px-md py-sm bg-error/10 border border-error/20 rounded-md flex items-center justify-between shadow-sm">
+            <span className="text-error text-sm font-medium">{errorAlert}</span>
+            <button
+              onClick={() => setErrorAlert(null)}
+              className="text-error hover:text-error-container p-1 rounded-md transition-colors"
+              aria-label="Dismiss error"
+            >
+              <span className="material-symbols-outlined text-[16px]">close</span>
+            </button>
+          </div>
+        )}
         <div className="flex items-end gap-sm bg-[#171717] border border-[#262626] rounded-xl p-xs focus-within:border-primary-container transition-colors shadow-[0_4px_24px_rgba(0,0,0,0.6)]">
+          <input 
+            type="file" 
+            ref={fileInputRef} 
+            onChange={handleFileUpload} 
+            className="hidden" 
+          />
           <button
+            onClick={() => fileInputRef.current?.click()}
+            disabled={isUploading || isStreaming}
             aria-label="Add attachment"
-            className="p-sm text-on-surface-variant hover:text-on-surface hover:bg-[#262626] rounded-lg transition-colors flex-shrink-0"
+            className="p-sm text-on-surface-variant hover:text-on-surface hover:bg-[#262626] rounded-lg transition-colors flex-shrink-0 disabled:opacity-50"
           >
-            <span className="material-symbols-outlined">add</span>
+            {isUploading ? (
+              <span className="material-symbols-outlined animate-spin">sync</span>
+            ) : (
+              <span className="material-symbols-outlined">add</span>
+            )}
           </button>
           <textarea
             ref={textareaRef}
@@ -151,7 +217,7 @@ export function MessageInput() {
             onKeyDown={handleKeyDown}
             placeholder="Message NimStudio..."
             rows={1}
-            disabled={isStreaming}
+            disabled={isStreaming || isUploading}
           />
           {!isStreaming ? (
             <button
@@ -166,9 +232,9 @@ export function MessageInput() {
           ) : (
             <button
               onClick={handleSubmit}
-              disabled={isStreaming}
+              disabled={isStreaming || isUploading}
               aria-label="Send message"
-              className="p-sm text-on-surface-variant hover:text-primary-container bg-[#262626] hover:bg-[#333333] rounded-lg transition-colors flex-shrink-0 mb-[2px] mr-[2px]"
+              className="p-sm text-on-surface-variant hover:text-primary-container bg-[#262626] hover:bg-[#333333] rounded-lg transition-colors flex-shrink-0 mb-[2px] mr-[2px] disabled:opacity-50"
             >
               <span className="material-symbols-outlined text-[20px]">
                 arrow_upward

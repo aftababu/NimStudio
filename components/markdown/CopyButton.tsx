@@ -20,7 +20,7 @@ export function CopyButton({ content }: CopyButtonProps) {
   return (
     <button
       onClick={handleCopy}
-      className="p-1.5 bg-[#171717]/80 hover:bg-[#333333] border border-outline-variant/30 rounded-md text-on-surface-variant hover:text-on-surface transition-all flex items-center justify-center backdrop-blur-sm shadow-sm"
+      className="p-1.5 bg-surface/80 hover:bg-surface-container-highest border border-outline-variant/30 rounded-md text-on-surface-variant hover:text-on-surface transition-all flex items-center justify-center backdrop-blur-sm shadow-sm"
       aria-label="Copy to clipboard"
     >
       <span className="material-symbols-outlined text-[16px]">

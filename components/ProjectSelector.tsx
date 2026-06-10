@@ -10,7 +10,7 @@ interface Project {
 }
 
 export function ProjectSelector() {
-  const { activeProjectId, setActiveProjectId } = useChatStore();
+  const { activeProjectId, setActiveProjectId, activeConversationId } = useChatStore();
   const [isOpen, setIsOpen] = useState(false);
   const dropdownRef = useRef<HTMLDivElement>(null);
 
@@ -38,7 +38,7 @@ export function ProjectSelector() {
   return (
     <div className="relative" ref={dropdownRef}>
       <div 
-        className="flex items-center gap-xs px-sm py-xs border border-outline-variant rounded-DEFAULT bg-[#171717] hover:border-[#404040] transition-colors cursor-pointer"
+        className="flex items-center gap-xs px-sm py-xs border border-outline-variant rounded-DEFAULT bg-surface hover:border-surface-container-highest transition-colors cursor-pointer"
         onClick={() => setIsOpen(!isOpen)}
       >
         <span className="font-label-caps text-label-caps text-on-surface-variant">
@@ -53,14 +53,25 @@ export function ProjectSelector() {
       </div>
 
       {isOpen && (
-        <div className="absolute top-full left-0 mt-xs w-64 bg-[#171717] border border-outline-variant rounded-md shadow-lg overflow-hidden z-50">
+        <div className="absolute top-full left-0 mt-xs w-64 bg-surface border border-outline-variant rounded-md shadow-lg overflow-hidden z-50">
           <div className="max-h-64 overflow-y-auto custom-scrollbar flex flex-col gap-[1px]">
             {projects?.map(project => (
               <div
                 key={project.id}
-                className={`px-md py-sm cursor-pointer hover:bg-[#262626] transition-colors ${project.id === activeProjectId ? 'bg-[#262626] text-primary' : 'text-on-surface'}`}
-                onClick={() => {
+                className={`px-md py-sm cursor-pointer hover:bg-surface-container-high transition-colors ${project.id === activeProjectId ? 'bg-surface-container-high text-primary' : 'text-on-surface'}`}
+                onClick={async () => {
                   setActiveProjectId(project.id);
+                  if (activeConversationId) {
+                    try {
+                      await fetch(`http://localhost:3001/api/chat/conversations/${activeConversationId}/preferences`, {
+                        method: 'PUT',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({ projectId: project.id })
+                      });
+                    } catch (err) {
+                      console.error("Failed to save project preference for chat:", err);
+                    }
+                  }
                   setIsOpen(false);
                 }}
               >

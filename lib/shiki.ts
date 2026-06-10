@@ -10,7 +10,7 @@ export async function getShikiHighlighter(): Promise<Highlighter> {
 
   if (!highlighterPromise) {
     highlighterPromise = createHighlighter({
-      themes: ['vitesse-dark'],
+      themes: ['github-dark', 'github-light'],
       langs: [
         'javascript', 'typescript', 'jsx', 'tsx', 'json', 'html', 'css', 
         'python', 'bash', 'shell', 'markdown', 'rust', 'go', 'yaml', 'sql'

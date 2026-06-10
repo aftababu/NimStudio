@@ -5,6 +5,7 @@ import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { useChatStore } from "../lib/store";
 import { useRouter, useSearchParams } from "next/navigation";
 import Link from "next/link";
+import Image from "next/image";
 
 interface Conversation {
   id: string;
@@ -67,14 +68,28 @@ function SideNavBarContent() {
     document.body.style.cursor = "col-resize";
   };
 
+  const { setActiveModelId, setActiveProjectId } = useChatStore();
+
   useEffect(() => {
     const id = searchParams.get("id");
     if (id) {
       setActiveConversationId(id);
+      fetch(`http://localhost:3001/api/chat/conversations/${id}/details`)
+        .then((res) => res.json())
+        .then((data) => {
+          if (data.projectId) setActiveProjectId(data.projectId);
+          if (data.modelId) setActiveModelId(data.modelId);
+        })
+        .catch(console.error);
     } else {
       setActiveConversationId(null);
     }
-  }, [searchParams, setActiveConversationId]);
+  }, [
+    searchParams,
+    setActiveConversationId,
+    setActiveModelId,
+    setActiveProjectId,
+  ]);
 
   const { data, isLoading } = useQuery<{ conversations: Conversation[] }>({
     queryKey: ["conversations"],
@@ -145,7 +160,7 @@ function SideNavBarContent() {
   return (
     <aside
       onClick={handleSidebarClick}
-      className="h-full border-r border-outline-variant bg-surface-container-low dark:bg-surface-container-low flex flex-col fixed left-0 top-0 overflow-y-auto z-50 flex-shrink-0 transition-[width] duration-0"
+      className="h-full border-r border-outline-variant bg-background  flex flex-col fixed left-0 top-0 overflow-y-auto z-50 flex-shrink-0 transition-[width] duration-0"
       style={{ width: "var(--sidebar-width, 250px)" }}
     >
       <div
@@ -153,17 +168,17 @@ function SideNavBarContent() {
         className="absolute right-0 top-0 w-1.5 h-full cursor-col-resize hover:bg-primary/50 z-[100] transition-colors"
       />
       {/* Header / Logo area */}
-      <div className="p-md border-b border-outline-variant flex items-center gap-sm">
-        <div className="w-8 h-8 rounded-DEFAULT bg-primary flex items-center justify-center text-on-primary">
-          <span className="material-symbols-outlined text-[18px]">
-            terminal
-          </span>
+      <div className="py-2 px-4 border-b border-outline-variant flex justify-between items-center gap-sm">
+        <div className="w-18 h-14 rounded-DEFAULT flex items-center justify-center text-on-primary">
+          <Image
+            src="/NimStudioLogo.png"
+            alt="NimStudio Logo"
+            width={1980}
+            height={1080}
+          />
         </div>
         <div className="min-w-0 flex-1">
-          <h1 className="font-headline-md text-headline-md font-bold text-on-surface tracking-tight truncate">
-            NimStudio
-          </h1>
-          <p className="font-label-caps text-label-caps text-on-surface-variant uppercase truncate">
+          <p className="font-label-caps text-sm text-label-caps text-on-surface-variant uppercase truncate">
             AI Workspace
           </p>
         </div>
@@ -218,7 +233,7 @@ function SideNavBarContent() {
                     className={`flex-1 flex items-center gap-sm px-sm py-xs rounded-DEFAULT text-[15px] transition-colors duration-150 border border-transparent text-left pl-9 pr-6 min-w-0
                       ${
                         activeConversationId === conv.id
-                          ? "text-primary font-medium bg-[#171717] border-outline-variant"
+                          ? "text-primary font-medium bg-surface border-outline-variant"
                           : "text-on-surface-variant hover:bg-surface-container-high hover:text-on-surface"
                       }`}
                   >
@@ -245,18 +260,18 @@ function SideNavBarContent() {
                   {/* Context Menu */}
                   {activeMenuId === conv.id && (
                     <div
-                      className="absolute right-6 top-8 w-32 bg-[#262626] border border-outline-variant rounded-md shadow-lg z-[60] py-1"
+                      className="absolute right-6 top-8 w-32 bg-surface-container-high border border-outline-variant rounded-md shadow-lg z-[60] py-1"
                       onClick={(e) => e.stopPropagation()}
                     >
                       <button
                         onClick={() => handleRename(conv.id, conv.title)}
-                        className="w-full text-left px-3 py-1.5 text-sm text-on-surface hover:bg-[#333333]"
+                        className="w-full text-left px-3 py-1.5 text-sm text-on-surface hover:bg-surface-container-highest"
                       >
                         Rename
                       </button>
                       <button
                         onClick={() => handleDelete(conv.id)}
-                        className="w-full text-left px-3 py-1.5 text-sm text-red-400 hover:bg-[#333333]"
+                        className="w-full text-left px-3 py-1.5 text-sm text-red-400 hover:bg-surface-container-highest"
                       >
                         Delete
                       </button>

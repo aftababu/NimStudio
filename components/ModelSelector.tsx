@@ -13,7 +13,7 @@ interface Model {
 }
 
 export function ModelSelector() {
-  const { activeModelId, setActiveModelId } = useChatStore();
+  const { activeModelId, setActiveModelId, activeConversationId } = useChatStore();
   const queryClient = useQueryClient();
   const initialized = useRef(false);
   const [isOpen, setIsOpen] = useState(false);
@@ -101,9 +101,23 @@ export function ModelSelector() {
     return () => document.removeEventListener("mousedown", handleClickOutside);
   }, []);
 
-  const handleSelectChange = (id: string) => {
+  const handleSelectChange = async (id: string) => {
     setActiveModelId(id);
     selectMutation.mutate(id);
+    
+    // If we're inside a specific conversation, save the preference permanently for this chat
+    if (activeConversationId) {
+      try {
+        await fetch(`http://localhost:3001/api/chat/conversations/${activeConversationId}/preferences`, {
+          method: 'PUT',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ modelId: id })
+        });
+      } catch (err) {
+        console.error("Failed to save model preference for chat:", err);
+      }
+    }
+    
     setIsOpen(false);
   };
 
@@ -134,7 +148,7 @@ export function ModelSelector() {
 
   if (isLoading) {
     return (
-      <div className="flex items-center gap-xs px-sm py-xs border border-outline-variant rounded-DEFAULT bg-[#171717]">
+      <div className="flex items-center gap-xs px-sm py-xs border border-outline-variant rounded-DEFAULT bg-surface">
         <span className="font-label-caps text-label-caps text-on-surface-variant">MODEL:</span>
         <span className="font-body-md text-body-md text-on-surface-variant animate-pulse w-24 inline-block">Loading...</span>
       </div>
@@ -143,7 +157,7 @@ export function ModelSelector() {
 
   if (isError || models.length === 0) {
     return (
-      <div className="flex items-center gap-xs px-sm py-xs border border-outline-variant rounded-DEFAULT bg-[#171717] text-red-400">
+      <div className="flex items-center gap-xs px-sm py-xs border border-outline-variant rounded-DEFAULT bg-surface text-red-400">
         Error loading models
       </div>
     );
@@ -154,7 +168,7 @@ export function ModelSelector() {
       {/* Dropdown Trigger */}
       <button
         onClick={() => setIsOpen(!isOpen)}
-        className="flex items-center gap-xs px-sm py-xs border border-outline-variant rounded-DEFAULT bg-[#171717] hover:border-primary-container transition-colors max-w-[350px] w-full text-left"
+        className="flex items-center gap-xs px-sm py-xs border border-outline-variant rounded-DEFAULT bg-surface hover:border-primary-container transition-colors max-w-[350px] w-full text-left"
       >
         <span className="font-label-caps text-label-caps text-on-surface-variant pointer-events-none whitespace-nowrap">
           MODEL:
@@ -169,7 +183,7 @@ export function ModelSelector() {
 
       {/* Dropdown Menu */}
       {isOpen && (
-        <div className="absolute top-full left-0 mt-1 w-[350px] bg-[#171717] border border-outline-variant rounded-lg shadow-xl z-50 flex flex-col overflow-hidden max-h-[400px]">
+        <div className="absolute top-full left-0 mt-1 w-[350px] bg-surface border border-outline-variant rounded-lg shadow-xl z-50 flex flex-col overflow-hidden max-h-[400px]">
           <div className="overflow-y-auto custom-scrollbar flex-1 py-1">
             {models.map((model) => (
               <div 
@@ -199,17 +213,17 @@ export function ModelSelector() {
 
                 {/* Mini Context Menu */}
                 {activeMenuId === model.id && (
-                  <div className="absolute right-8 top-8 w-32 bg-[#262626] border border-outline-variant rounded-md shadow-lg z-[60] py-1"
+                  <div className="absolute right-8 top-8 w-32 bg-surface-container-high border border-outline-variant rounded-md shadow-lg z-[60] py-1"
                        onClick={e => e.stopPropagation()}>
                     <button 
                       onClick={() => handleRename(model.id, model.name)}
-                      className="w-full text-left px-3 py-1.5 text-sm text-on-surface hover:bg-[#333333]"
+                      className="w-full text-left px-3 py-1.5 text-sm text-on-surface hover:bg-surface-container-highest"
                     >
                       Rename
                     </button>
                     <button 
                       onClick={() => handleRemove(model.id)}
-                      className="w-full text-left px-3 py-1.5 text-sm text-red-400 hover:bg-[#333333]"
+                      className="w-full text-left px-3 py-1.5 text-sm text-red-400 hover:bg-surface-container-highest"
                     >
                       Delete
                     </button>
@@ -219,7 +233,7 @@ export function ModelSelector() {
             ))}
           </div>
           
-          <div className="p-2 border-t border-outline-variant bg-[#1c1c1c]">
+          <div className="p-2 border-t border-outline-variant bg-surface-container-low">
             <button
               onClick={() => setIsModalOpen(true)}
               className="w-full flex items-center justify-center gap-2 py-2 text-sm font-medium text-primary hover:bg-primary/10 rounded-md transition-colors"
@@ -234,7 +248,7 @@ export function ModelSelector() {
       {/* Add Model Modal */}
       {isModalOpen && (
         <div className="fixed inset-0 bg-black/60 z-[100] flex items-center justify-center backdrop-blur-sm">
-          <div className="bg-[#171717] border border-outline-variant rounded-xl shadow-2xl w-[400px] p-6 animate-in fade-in zoom-in-95 duration-200">
+          <div className="bg-surface border border-outline-variant rounded-xl shadow-2xl w-[400px] p-6 animate-in fade-in zoom-in-95 duration-200">
             <h2 className="text-xl font-bold text-on-surface mb-4">Add Custom Model</h2>
             <p className="text-sm text-on-surface-variant mb-4">
               Enter the exact Model ID from NVIDIA NIM (e.g. <code>meta/llama-3.2-1b-instruct</code>).
@@ -244,7 +258,7 @@ export function ModelSelector() {
               value={newModelId}
               onChange={(e) => setNewModelId(e.target.value)}
               placeholder="Model ID..."
-              className="w-full bg-[#262626] border border-outline-variant rounded-md px-3 py-2 text-on-surface focus:outline-none focus:border-primary-container mb-6"
+              className="w-full bg-surface-container-high border border-outline-variant rounded-md px-3 py-2 text-on-surface focus:outline-none focus:border-primary-container mb-6"
               autoFocus
             />
             <div className="flex justify-end gap-3">

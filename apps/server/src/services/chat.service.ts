@@ -4,14 +4,20 @@ import crypto from 'crypto';
 import OpenAI from 'openai';
 import { decrypt } from '../utils/crypto';
 
-export async function saveConversation(title: string = 'New Chat', projectId: string = 'default'): Promise<string> {
+export async function saveConversation(title: string = 'New Chat', projectId: string = 'default', modelId: string | null = null): Promise<string> {
   const id = crypto.randomUUID();
   await db.insert(conversations).values({
     id,
     title,
     projectId,
+    modelId,
   });
   return id;
+}
+
+export async function getConversationDetails(conversationId: string) {
+  const convo = await db.select({ projectId: conversations.projectId, modelId: conversations.modelId }).from(conversations).where(eq(conversations.id, conversationId)).limit(1);
+  return convo[0] || null;
 }
 
 export async function getConversationProjectId(conversationId: string): Promise<string> {

@@ -10,6 +10,7 @@ export const projects = sqliteTable("projects", {
 export const conversations = sqliteTable("conversations", {
   id: text("id").primaryKey(),
   projectId: text("project_id").notNull().default("default").references(() => projects.id, { onDelete: "cascade" }),
+  modelId: text("model_id").references(() => models.id, { onDelete: "set null" }),
   title: text("title").notNull(),
   summary: text("summary"),
   summarizedCount: integer("summarized_count").notNull().default(0),
@@ -57,4 +58,23 @@ export const globalRules = sqliteTable('global_rules', {
   category: text('category'),
   createdAt: integer('created_at', { mode: 'timestamp' }).notNull().default(sql`(unixepoch())`),
   updatedAt: integer('updated_at', { mode: 'timestamp' }).notNull().default(sql`(unixepoch())`),
+});
+
+export const documents = sqliteTable('documents', {
+  id: text('id').primaryKey(),
+  projectId: text('project_id').notNull().default('default').references(() => projects.id, { onDelete: 'cascade' }),
+  filename: text('filename').notNull(),
+  fileType: text('file_type').notNull(),
+  markdownContent: text('markdown_content').notNull(),
+  createdAt: integer('created_at', { mode: 'timestamp' }).notNull().default(sql`(unixepoch())`),
+});
+
+export const documentChunks = sqliteTable('document_chunks', {
+  id: text('id').primaryKey(),
+  documentId: text('document_id').notNull().references(() => documents.id, { onDelete: 'cascade' }),
+  chunkIndex: integer('chunk_index').notNull(),
+  content: text('content').notNull(),
+  // Placeholder for embeddings, storing a JSON array string since libSQL has limited native vector type support right now
+  embedding: text('embedding'),
+  createdAt: integer('created_at', { mode: 'timestamp' }).notNull().default(sql`(unixepoch())`),
 });

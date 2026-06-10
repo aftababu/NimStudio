@@ -3,7 +3,7 @@ import { ProjectSelector } from "./ProjectSelector";
 
 export function TopAppBar() {
   return (
-    <header className="flex justify-between items-center w-full px-lg py-sm sticky top-0 z-40 bg-[#0A0A0A] border-b border-outline-variant h-[60px]">
+    <header className="flex justify-between items-center w-full px-lg py-sm sticky top-0 z-40 bg-background border-b border-outline-variant h-[60px]">
       {/* Left: Model Selection Dropdowns */}
       <div className="flex items-center gap-md">
         <ModelSelector />

@@ -1,8 +1,10 @@
 "use client";
 
-import { useEffect, useState, useRef } from "react";
+import { useEffect, useState, useRef, useLayoutEffect } from "react";
 import { useChatStore } from "../lib/store";
 import { MarkdownRenderer } from "./markdown/MarkdownRenderer";
+import { ConversationNavigator } from "./chat/conversation-navigator";
+import { UserMessage } from "./chat/user-message";
 
 export function ChatFeed() {
   const {
@@ -11,13 +13,16 @@ export function ChatFeed() {
     streamingContent,
     activeConversationId,
     setMessages,
+    setActiveMessageIndex,
   } = useChatStore();
   const [isLoadingMessages, setIsLoadingMessages] = useState(false);
+  const [chatNotFound, setChatNotFound] = useState(false);
   const [isAutoScrollEnabled, setIsAutoScrollEnabled] = useState(true);
   const scrollContainerRef = useRef<HTMLDivElement>(null);
   const bottomRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
+    setChatNotFound(false);
     if (!activeConversationId) {
       // It's a new chat, so just reset messages
       setMessages([
@@ -36,6 +41,10 @@ export function ChatFeed() {
         const res = await fetch(
           `http://localhost:3001/api/chat/conversations/${activeConversationId}/messages`,
         );
+        if (res.status === 404) {
+          setChatNotFound(true);
+          return;
+        }
         if (res.ok) {
           const data = await res.json();
           if (data.messages && data.messages.length > 0) {
@@ -82,17 +91,127 @@ export function ChatFeed() {
     setIsAutoScrollEnabled(true);
     bottomRef.current?.scrollIntoView({ behavior: "smooth" });
   };
+
+  // IntersectionObserver for tracking active messages
+  useEffect(() => {
+    if (isLoadingMessages || messages.length === 0) return;
+
+    const options = {
+      root: scrollContainerRef.current,
+      rootMargin: "-20% 0px -40% 0px",
+      threshold: 0,
+    };
+
+    // To handle multiple intersecting items, we keep track of their intersection ratios or just pick the top one.
+    let intersectingEntries: Map<Element, IntersectionObserverEntry> = new Map();
+
+    const callback: IntersectionObserverCallback = (entries) => {
+      entries.forEach((entry) => {
+        if (entry.isIntersecting) {
+          intersectingEntries.set(entry.target, entry);
+        } else {
+          intersectingEntries.delete(entry.target);
+        }
+      });
+
+      if (intersectingEntries.size > 0) {
+        // Prevent observer from overriding the state during a programmatic scroll
+        const isProgrammatic = useChatStore.getState().isProgrammaticScroll;
+        if (isProgrammatic) {
+          console.log("[IntersectionObserver] Ignored update. State: programmatic scrolling active.");
+          return;
+        }
+
+        let bestEntry: IntersectionObserverEntry | null = null;
+        let minDistance = Infinity;
+
+        // Focal point is the top third of the viewport
+        const focalPointY = window.innerHeight * 0.3;
+
+        intersectingEntries.forEach((entry) => {
+          const rect = entry.boundingClientRect;
+          
+          // If the focal point is strictly inside this element, it wins unconditionally
+          if (rect.top <= focalPointY && rect.bottom >= focalPointY) {
+            bestEntry = entry;
+            minDistance = -1; // Flag to ignore others
+          } else if (minDistance !== -1) {
+            // Otherwise, pick the one closest to the focal point
+            const dist = Math.min(
+              Math.abs(rect.top - focalPointY),
+              Math.abs(rect.bottom - focalPointY)
+            );
+            if (dist < minDistance) {
+              minDistance = dist;
+              bestEntry = entry;
+            }
+          }
+        });
+
+        if (bestEntry) {
+          const target = (bestEntry as IntersectionObserverEntry).target as HTMLElement;
+          const indexStr = target.dataset.messageIndex;
+          if (indexStr) {
+            const parsedIndex = parseInt(indexStr, 10);
+            const currentActive = useChatStore.getState().activeMessageIndex;
+            if (currentActive !== parsedIndex) {
+              console.log(`[IntersectionObserver] Setting activeMessageId: ${parsedIndex} (ObserverSelected: ${parsedIndex})`);
+              setActiveMessageIndex(parsedIndex);
+            }
+          }
+        }
+      }
+    };
+
+    const observer = new IntersectionObserver(callback, options);
+    
+    // Select all assistant message nodes
+    const nodes = document.querySelectorAll("[data-message-index]");
+    nodes.forEach((node) => observer.observe(node));
+
+    return () => observer.disconnect();
+  }, [messages, isLoadingMessages, setActiveMessageIndex]);
+
+  if (chatNotFound) {
+    return (
+      <div className="flex-1 flex flex-col items-center justify-center p-lg relative z-10">
+        <div className="w-20 h-20 bg-surface rounded-2xl border border-outline-variant flex items-center justify-center mb-md shadow-xl">
+          <span className="material-symbols-outlined text-[32px] text-on-surface-variant">
+            forum
+          </span>
+        </div>
+        <h2 className="text-2xl font-semibold text-on-surface mb-xs">
+          Chat Not Found
+        </h2>
+        <p className="text-on-surface-variant text-sm mb-lg text-center max-w-[300px]">
+          The conversation you're looking for doesn't exist or has been deleted.
+        </p>
+        <button
+          onClick={() => {
+            useChatStore.getState().setActiveConversationId(null);
+            window.history.pushState({}, "", "/");
+          }}
+          className="flex items-center gap-sm px-lg py-sm bg-primary text-on-primary rounded-lg font-medium hover:bg-primary/90 transition-colors shadow-lg"
+        >
+          <span className="material-symbols-outlined text-[20px]">add</span>
+          Start New Chat
+        </button>
+      </div>
+    );
+  }
+
   return (
-    <div className="flex-1 relative flex flex-col min-h-0">
+    <div className="flex-1 relative flex flex-col min-h-0 bg-background">
+      <ConversationNavigator />
       <div
         ref={scrollContainerRef}
         onScroll={handleScroll}
-        className="flex-1 overflow-y-auto p-lg pb-[120px] custom-scrollbar"
+        className="flex-1 overflow-y-auto p-lg pb-[120px] custom-scrollbar "
       >
         <div className="max-w-3xl mx-auto flex flex-col gap-lg">
           {/* System/Context Notification */}
           <div className="text-center py-md">
-            <span className="inline-flex items-center gap-xs px-sm py-xs border border-outline-variant bg-[#171717] rounded-DEFAULT font-code-sm text-code-sm text-on-surface-variant">
+            <span className="inline-flex items-center gap-xs px-sm py-xs border border-outline-variant bg-surface rounded-DEFAULT font-code-sm text-code-sm text-on-surface-variant">
               <span className="w-1.5 h-1.5 rounded-full bg-primary-container"></span>
               Context loaded: Local workspace active
             </span>
@@ -108,25 +227,17 @@ export function ChatFeed() {
             messages.map((msg, index) => {
               if (msg.role === "user") {
                 return (
-                  <div key={index} className="flex flex-col gap-xs">
-                    <div className="flex items-center gap-sm text-on-surface-variant mb-xs">
-                      <span className="material-symbols-outlined text-[16px]">
-                        person
-                      </span>
-                      <span className="font-label-caps text-label-caps uppercase">
-                        User
-                      </span>
-                    </div>
-                    <div className="font-body-lg text-body-lg text-on-surface leading-relaxed pr-lg whitespace-pre-wrap">
-                      {msg.content}
-                    </div>
+                  <div key={index} id={`message-${index}`}>
+                    <UserMessage content={msg.content} />
                   </div>
                 );
               } else if (msg.role === "assistant") {
                 return (
                   <div
                     key={index}
-                    className="flex flex-col gap-xs bg-[#171717] p-md border-l-2 border-primary-container rounded-r-DEFAULT shadow-[0_4px_24px_rgba(0,0,0,0.4)]"
+                    id={`message-${index}`}
+                    data-message-index={index}
+                    className="flex flex-col gap-xs bg-surface p-md border-l-2 border-primary-container rounded-r-[4px] shadow-[0_1px_6px_rgba(0,0,0,0.2)]"
                   >
                     <div className="flex items-center gap-sm text-primary-container mb-xs">
                       <span className="material-symbols-outlined text-[16px]">
@@ -146,7 +257,11 @@ export function ChatFeed() {
             })}
 
           {isStreaming && (
-            <div className="flex flex-col gap-xs bg-[#171717] p-md border-l-2 border-primary-container rounded-r-DEFAULT shadow-[0_4px_24px_rgba(0,0,0,0.4)]">
+            <div 
+              id={`message-${messages.length}`}
+              data-message-index={messages.length}
+              className="flex flex-col gap-xs bg-surface p-md border-l-2 border-primary-container rounded-r-DEFAULT shadow-[0_1px_6px_rgba(0,0,0,0.2)]"
+            >
               <div className="flex items-center gap-sm text-primary-container mb-xs">
                 <span className="material-symbols-outlined text-[16px]">
                   smart_toy
@@ -170,7 +285,7 @@ export function ChatFeed() {
         <div className="absolute bottom-[140px] left-1/2 -translate-x-1/2 z-20">
           <button
             onClick={scrollToBottom}
-            className="flex items-center justify-center w-10 h-10 bg-[#262626] border border-[#333333] hover:bg-[#333333] text-on-surface rounded-full shadow-[0_4px_24px_rgba(0,0,0,0.6)] transition-all"
+            className="flex items-center justify-center w-10 h-10 bg-surface-container-high border border-surface-container-highest hover:bg-surface-container-highest text-on-surface rounded-full shadow-[0_4px_24px_rgba(0,0,0,0.6)] transition-all"
             aria-label="Scroll to bottom"
           >
             <span className="material-symbols-outlined text-[20px]">

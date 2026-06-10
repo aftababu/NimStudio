@@ -11,9 +11,11 @@
   "dependencies": {
     "@hono/node-server": "^1.10.0",
     "hono": "^4.2.0",
+    "multer": "^2.1.1",
     "openai": "^6.41.0"
   },
   "devDependencies": {
+    "@types/multer": "^2.1.0",
     "@types/node": "^20.0.0",
     "dotenv": "^17.4.2",
     "tsx": "^4.7.0",

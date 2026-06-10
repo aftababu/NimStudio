@@ -8,23 +8,23 @@ export default function SettingsLayout({ children }: { children: React.ReactNode
   const pathname = usePathname();
 
   const tabs = [
-    { name: "General", href: "/settings", icon: "settings" },
-    { name: "API Keys", href: "/settings/api-keys", icon: "key" },
-    { name: "Global Rules", href: "/settings/rules", icon: "rule" },
+    { name: 'General', href: '/settings', icon: 'settings' },
+    { name: 'API Keys', href: '/settings/api-keys', icon: 'key' },
+    { name: 'Projects', href: '/settings/projects', icon: 'folder' },
   ];
 
   return (
     <>
       <SideNavBar />
-      <main className="flex-1 flex flex-col h-full bg-[#0A0A0A] relative transition-[margin-left] duration-0" style={{ marginLeft: 'var(--sidebar-width, 250px)' }}>
+      <main className="flex-1 flex flex-col h-full bg-background relative transition-[margin-left] duration-0" style={{ marginLeft: 'var(--sidebar-width, 250px)' }}>
         {/* Top Header */}
-        <header className="h-[60px] border-b border-outline-variant flex items-center px-lg bg-[#0A0A0A] sticky top-0 z-10">
+        <header className="h-[60px] border-b border-outline-variant flex items-center px-lg bg-background sticky top-0 z-10">
           <h2 className="font-headline-sm text-headline-sm font-semibold text-on-surface">Settings</h2>
         </header>
 
         <div className="flex-1 overflow-hidden flex">
           {/* Settings Secondary Navigation */}
-          <aside className="w-[240px] border-r border-outline-variant bg-[#0A0A0A] p-md flex flex-col gap-xs overflow-y-auto hidden md:flex">
+          <aside className="w-[240px] border-r border-outline-variant bg-background p-md flex flex-col gap-xs overflow-y-auto hidden md:flex">
             {tabs.map((tab) => {
               const isActive = pathname === tab.href;
               return (
@@ -33,7 +33,7 @@ export default function SettingsLayout({ children }: { children: React.ReactNode
                   href={tab.href}
                   className={`flex items-center gap-sm px-md py-sm rounded-md transition-colors duration-200 border ${
                     isActive 
-                      ? "bg-[#171717] border-outline-variant text-primary font-medium" 
+                      ? "bg-surface border-outline-variant text-primary font-medium" 
                       : "border-transparent text-on-surface-variant hover:bg-surface-container-high hover:text-on-surface"
                   }`}
                 >

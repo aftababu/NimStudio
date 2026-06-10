@@ -21,31 +21,23 @@
   --color-on-primary-container: #284400;
   --color-outline: #8c947d;
   --color-surface-variant: #353534;
-  --color-surface-container-high: #2a2a2a;
   --color-secondary-fixed: #e5e2e1;
   --color-primary-container: #76b900;
   --color-tertiary-fixed-dim: #c8c6c5;
-  --color-background: #0A0A0A;
   --color-on-tertiary-fixed: #1b1c1c;
   --color-error-container: #93000a;
-  --color-surface-container-low: #1c1b1b;
   --color-on-secondary-container: #b7b4b4;
   --color-on-error: #690005;
   --color-surface-container: #201f1f;
   --color-primary: #94da32;
   --color-secondary-container: #474746;
-  --color-surface: #131313;
-  --color-surface-container-highest: #353534;
   --color-tertiary: #c8c6c5;
   --color-inverse-primary: #416900;
   --color-on-tertiary: #303030;
   --color-on-background: #e5e2e1;
-  --color-outline-variant: #424936;
   --color-surface-bright: #3a3939;
   --color-primary-fixed-dim: #94da32;
   --color-on-tertiary-container: #3c3c3c;
-  --color-on-surface-variant: #c1cab1;
-  --color-on-surface: #e5e2e1;
   --color-on-error-container: #ffdad6;
   --color-secondary-fixed-dim: #c8c6c5;
   --color-on-secondary: #313030;
@@ -62,6 +54,16 @@
   --color-on-primary-fixed-variant: #304f00;
   --color-surface-container-lowest: #0e0e0e;
 
+  /* Dynamic Theme Variables */
+  --color-background: var(--theme-bg);
+  --color-surface: var(--theme-surf);
+  --color-surface-container-low: var(--theme-surf-low);
+  --color-surface-container-high: var(--theme-surf-high);
+  --color-surface-container-highest: var(--theme-surf-highest);
+  --color-on-surface: var(--theme-on-surf);
+  --color-on-surface-variant: var(--theme-on-surf-var);
+  --color-outline-variant: var(--theme-outline);
+
   --spacing-xl: 32px;
   --spacing-gutter: 16px;
   --spacing-lg: 24px;
@@ -76,8 +78,31 @@
 }
 
 :root {
+  /* Light Mode Variables */
+  --theme-bg: #f3f3f3;
+  --theme-surf: #ffffff;
+  --theme-surf-low: #f5f5f5;
+  --theme-surf-high: #e5e5e5;
+  --theme-surf-highest: #d4d4d4;
+  --theme-on-surf: #171717;
+  --theme-on-surf-var: #525252;
+  --theme-outline: #c1cab1;
+  /* --theme-outline: #e5e5e5; */
+
   --background: var(--color-background);
   --foreground: var(--color-on-surface);
+}
+
+.dark {
+  /* Dark Mode Variables */
+  --theme-bg: #0a0a0a;
+  --theme-surf: #171717;
+  --theme-surf-low: #121212;
+  --theme-surf-high: #262626;
+  --theme-surf-highest: #333333;
+  --theme-on-surf: #e5e2e1;
+  --theme-on-surf-var: #c1cab1;
+  --theme-outline: #424936;
 }
 
 body {

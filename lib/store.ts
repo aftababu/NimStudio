@@ -13,6 +13,9 @@ interface ChatState {
   activeConversationId: string | null;
   activeProjectId: string;
   sidebarWidth: number;
+  chatNotFound: boolean;
+  activeMessageIndex: number | null;
+  isProgrammaticScroll: boolean;
   addMessage: (message: Message) => void;
   setMessages: (messages: Message[]) => void;
   setStreamingContent: (content: string) => void;
@@ -22,6 +25,9 @@ interface ChatState {
   setActiveConversationId: (id: string | null) => void;
   setActiveProjectId: (id: string) => void;
   setSidebarWidth: (width: number) => void;
+  setChatNotFound: (notFound: boolean) => void;
+  setActiveMessageIndex: (index: number | null) => void;
+  setIsProgrammaticScroll: (isProgrammatic: boolean) => void;
 }
 
 export const useChatStore = create<ChatState>((set) => ({
@@ -37,6 +43,9 @@ export const useChatStore = create<ChatState>((set) => ({
   activeConversationId: null,
   activeProjectId: 'default',
   sidebarWidth: 250,
+  chatNotFound: false,
+  activeMessageIndex: null,
+  isProgrammaticScroll: false,
   addMessage: (message) => set((state) => ({ messages: [...state.messages, message] })),
   setMessages: (messages) => set({ messages }),
   setStreamingContent: (content) => set({ streamingContent: content }),
@@ -46,4 +55,7 @@ export const useChatStore = create<ChatState>((set) => ({
   setActiveConversationId: (id) => set({ activeConversationId: id }),
   setActiveProjectId: (id) => set({ activeProjectId: id }),
   setSidebarWidth: (width) => set({ sidebarWidth: width }),
+  setChatNotFound: (notFound) => set({ chatNotFound: notFound }),
+  setActiveMessageIndex: (index) => set({ activeMessageIndex: index }),
+  setIsProgrammaticScroll: (isProgrammatic) => set({ isProgrammaticScroll: isProgrammatic }),
 }));

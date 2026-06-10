@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { Geist, JetBrains_Mono } from "next/font/google";
 import "./globals.css";
 import QueryProvider from "../lib/QueryProvider";
+import { ThemeProvider } from "@/components/ThemeProvider";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -26,7 +27,8 @@ export default function RootLayout({
   return (
     <html
       lang="en"
-      className={`${geistSans.variable} ${jetbrainsMono.variable} dark`}
+      className={`${geistSans.variable} ${jetbrainsMono.variable}`}
+      suppressHydrationWarning
     >
       <head>
         <link
@@ -34,10 +36,12 @@ export default function RootLayout({
           rel="stylesheet"
         />
       </head>
-      <body className="flex h-screen overflow-hidden font-body-md text-body-md antialiased selection:bg-primary-container selection:text-on-primary-container">
-        <QueryProvider>
-          {children}
-        </QueryProvider>
+      <body className="flex h-screen overflow-hidden font-body-md text-body-md antialiased selection:bg-primary-container selection:text-on-primary-container" suppressHydrationWarning>
+        <ThemeProvider attribute="class" defaultTheme="system" enableSystem disableTransitionOnChange>
+          <QueryProvider>
+            {children}
+          </QueryProvider>
+        </ThemeProvider>
       </body>
     </html>
   );
