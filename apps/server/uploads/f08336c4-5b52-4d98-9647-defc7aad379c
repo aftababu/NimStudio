@@ -1,0 +1,2106 @@
+<body id="opac-patron-update" class="branch-105">
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<button id="scrolltocontent">Skip to main content</button>
+<div id="wrapper">
+    <div id="header-region" class="noprint">
+        <nav class="navbar navbar-expand">
+            <div id="logo">
+            <a class="navbar-brand" href="/cgi-bin/koha/opac-main.pl">
+                
+                    Koha online
+                
+            </a>
+            </div>
+            
+                
+                    <div id="cartDetails" class="cart-message">Your cart is empty.</div>
+                
+                <ul id="cart-list-nav" class="navbar-nav">
+                    
+                        <li class="nav-item js-show" style="display: list-item;">
+                            <a href="#" class="nav-link" title="Collect items you are interested in" id="cartmenulink" role="button">
+                                <i id="carticon" class="fa fa-shopping-cart fa-icon-black" aria-hidden="true"></i> <span class="cartlabel">Cart</span> <span id="basketcount"></span>
+                            </a>
+                        </li>
+                    
+                    <li class="divider-vertical"></li>
+                    
+                        <li class="nav-item dropdown">
+                            <a href="/cgi-bin/koha/opac-shelves.pl" title="Show lists" class="nav-link dropdown-toggle" id="listsmenu" data-toggle="dropdown" role="button" aria-label="Show dropdown with detailed list information" aria-haspopup="true" aria-expanded="false"><i class="fa fa-list fa-icon-black" aria-hidden="true"></i> <span class="listslabel">Lists</span>
+                            </a>
+                            <div aria-labelledby="listsmenu" role="menu" class="dropdown-menu">
+                                
+                                    <a class="dropdown-item" href="/cgi-bin/koha/opac-shelves.pl?op=list&amp;public=1" tabindex="-1" role="menuitem"><strong>Public lists</strong></a>
+                                    
+                                    
+                                        <a class="dropdown-item" href="/cgi-bin/koha/opac-shelves.pl?op=view&amp;shelfnumber=47&amp;sortfield=title" tabindex="-1" role="menuitem">4th</a>
+                                        
+                                        
+                                    
+                                    
+                                        <a class="dropdown-item listmenulink" href="/cgi-bin/koha/opac-shelves.pl?op=list&amp;public=1" tabindex="-1" role="menuitem">View all</a>
+                                    
+                                
+                                
+                                    <div class="dropdown-divider"></div>
+                                
+                                
+                                    <a class="dropdown-item" href="/cgi-bin/koha/opac-shelves.pl?op=list&amp;public=0" tabindex="-1" role="menuitem"><strong>Your lists</strong></a>
+                                    
+                                        
+                                            <a class="dropdown-item disabled" href="#" tabindex="-1" role="menuitem">No private lists</a>
+                                        
+                                            <a class="dropdown-item listmenulink" href="/cgi-bin/koha/opac-shelves.pl?op=add_form" tabindex="-1" role="menuitem">New list</a>
+                                    
+                                
+                            </div> <!-- / .dropdown-menu -->
+                        </li> <!-- / .nav-item.dropdown -->
+                    
+                    
+
+                </ul> <!-- / .navbar-nav -->
+            
+            
+                
+                <ul id="members" class="navbar-nav">
+                    <li class="nav-item dropdown">
+                        
+                            
+                                <a href="/cgi-bin/koha/opac-user.pl" class="dropdown-toggle" id="user-menu" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">
+                                    <i class="fa fa-user fa-icon-black fa-fw" aria-hidden="true"></i>
+                                    <span class="userlabel">Welcome,     RAFAT SHAHRIAR</span>
+                                </a>
+                                <a tabindex="-1" role="menuitem" class="logout js-hide" href="/cgi-bin/koha/opac-main.pl?logout.x=1" style="display: none;"><i class="fa fa-fw fa-sign-out" aria-hidden="true"></i> Log out</a>
+                            
+                        
+
+                        
+                            <div aria-labelledby="user-menu" role="menu" class="dropdown-menu dropdown-menu-right">
+                                <div id="loggedinuser-menu">
+                                    <p>
+                                        <a class="login-link" href="/cgi-bin/koha/opac-user.pl"><span class="loggedinusername" data-borrowernumber="56314" data-branchcode="105" data-categorycode="105">Your account</span></a>
+                                    </p>
+                                    
+                                        <p>
+                                            <a tabindex="-1" role="menuitem" class="login-link" href="/cgi-bin/koha/opac-search-history.pl" title="View your search history">Search history</a>
+                                            <span class="divider-vertical"></span>
+                                            <a class="clearsh" href="/cgi-bin/koha/opac-search-history.pl?action=delete" title="Delete your search history"><i class="fa fa-trash-can" aria-hidden="true"></i> Clear</a>
+                                        </p>
+                                    
+                                    <a tabindex="-1" role="menuitem" class="logout" id="logout" href="/cgi-bin/koha/opac-main.pl?logout.x=1">Log out</a>
+                                </div>
+                            </div>
+                        
+                    </li>
+                    <!-- Cookie consent button for non logged-in users -->
+                    
+                    
+                </ul>
+            
+        </nav> <!-- /navbar -->
+
+        
+            <div class="container-fluid">
+                <div class="row">
+                    <div class="col">
+                        
+    
+        <div id="opacheader">
+            
+                <div class="default_item">
+                    
+                    <div class="default_body"><table width="100%">
+<tbody>
+<tr>
+<td style="width: 10%;"><img src="https://opac.iiuc.ac.bd/opac-tmpl/bootstrap/images/iiuclogo.png" height="100" alt="IIUC Logo" align="absmiddle"></td>
+<td style="width: 90%;">
+<h1 style="font-size: 36px; font-weight: bold;">International Islamic University Chittagong</h1>
+</td>
+</tr>
+</tbody>
+</table></div>
+                </div>
+            
+        </div>
+    
+
+                    </div>
+                </div>
+            </div>
+        
+
+    </div> <!-- / header-region -->
+
+    
+        <div class="container-fluid">
+            
+                <div class="row">
+                    <div class="col">
+                            <div id="opac-main-search" class="mastheadsearch">
+                                
+                                    <form name="searchform" method="get" action="/cgi-bin/koha/opac-search.pl" id="searchform">
+                                        <div class="form-row align-items-center">
+                                            <div class="col-sm-auto order-2 order-sm-2">
+                                                <select name="idx" id="masthead_search" class="form-control">
+                                                    
+                                                        <option value="">Library catalog</option>
+                                                    
+                                                    
+                                                        <option value="ti">Title</option>
+                                                    
+                                                    
+                                                        <option value="au">Author</option>
+                                                    
+                                                    
+                                                        <option value="su">Subject</option>
+                                                    
+                                                    
+                                                        <option value="nb">ISBN</option>
+                                                    
+                                                    
+                                                        <option value="ns">ISSN</option>
+                                                    
+                                                    
+                                                        <option value="se">Series</option>
+                                                    
+                                                    
+                                                        
+                                                            <option value="callnum,phr">Call number</option>
+                                                        
+                                                    
+                                                <option value="bc">Barcode</option></select>
+                                            </div> <!-- /.col-sm-auto -->
+
+                                            <div class="col order-4 order-sm-3">
+                                                
+                                                    <input type="text" class="transl1 form-control" id="translControl1" name="q" value=""><span id="translControl"></span>
+                                                
+                                            </div> <!-- /.col -->
+
+                                            
+                                                
+                                                    
+                                                
+                                            
+
+                                            <div class="order-5 col-sm-auto">
+                                                <button type="submit" id="searchsubmit" class="btn btn-primary" title="Search" aria-label="Search">
+                                                    <i class="fa fa-search" aria-hidden="true"></i>
+                                                </button>
+                                            </div>
+
+                                        </div> <!-- /.form-row -->
+                                        <input type="hidden" name="weight_search" value="1">
+                                    </form>
+                                
+                            </div><!-- /#opac-main-search -->
+                    </div> <!-- /.col -->
+                </div> <!-- /.row -->
+            
+
+            <div class="row">
+                <ul class="nav" id="moresearches">
+                    <li class="nav-item">
+                        <a href="/cgi-bin/koha/opac-search.pl">Advanced search</a>
+                    </li>
+                    
+                    
+                    
+                        <li class="nav-item">
+                            <a href="/cgi-bin/koha/opac-authorities-home.pl">Authority search</a>
+                        </li>
+                    
+                    
+                    
+                        <li class="nav-item">
+                            <a href="/cgi-bin/koha/opac-tags.pl">Tag cloud</a>
+                        </li>
+                    
+                    
+                    
+                    
+                    
+                        
+                    
+                    <li class="nav-item">
+                        <a id="library_page" href="/cgi-bin/koha/opac-library.pl">
+                            
+                                <span>Library</span>
+                            
+                        </a>
+                    </li>
+                    
+    
+
+                </ul> <!-- /.nav#moresearches -->
+            </div> <!-- /.row -->
+        </div> <!-- /.container-fluid -->
+    
+
+    <!-- Login form hidden by default, used for modal window -->
+    <div id="loginModal" class="modal" tabindex="-1" role="dialog" aria-labelledby="modalLoginLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h2 class="modal-title" id="modalLoginLabel">Log in to your account</h2>
+                    <button type="button" class="closebtn" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">×</span>
+                    </button>
+                </div>
+                <form action="/cgi-bin/koha/opac-user.pl" method="post" name="auth" id="modalAuth">
+                    <input type="hidden" name="has-search-query" id="has-search-query" value="">
+                    <div class="modal-body">
+                        
+                            <a href="/cgi-bin/koha/svc/auth/googleopenidconnect" class="btn btn-light" id="openid_connect"><i class="fa-brands fa-google" aria-hidden="true"></i> Log in with Google</a>
+                            <p>If you do not have a Google account, but do have a local account, you can still log in: </p>
+                        
+                        
+                        
+                            
+                            
+                            <input type="hidden" name="koha_login_context" value="opac">
+                            <fieldset class="brief">
+                                <div class="local-login">
+                                    <label for="muserid">Login:</label><input type="text" id="muserid" name="userid" autocomplete="off">
+                                    <label for="mpassword">Password:</label><input type="password" id="mpassword" name="password" autocomplete="off">
+                                    <fieldset class="action">
+                                        <input type="submit" class="btn btn-primary" value="Log in">
+                                    </fieldset>
+                                </div>
+                                
+                                
+                                    <div id="forgotpassword-modal" class="forgotpassword">
+                                        <p><a href="/cgi-bin/koha/opac-password-recovery.pl">Forgot your password?</a></p>
+                                    </div>
+                                
+                                
+                            </fieldset>
+                        
+                    </div>
+                </form> <!-- /#auth -->
+            </div> <!-- /.modal-content -->
+        </div> <!-- /.modal-dialog -->
+    </div>  <!-- /#modalAuth  -->
+    
+
+
+<div class="main">
+
+    
+    <nav id="breadcrumbs" aria-label="Breadcrumb" class="breadcrumbs">
+        <ol class="breadcrumb">
+            
+            
+                
+    
+        <li class="breadcrumb-item">
+            
+                    <a href="/cgi-bin/koha/opac-main.pl" title="Home">Home</a>
+                
+        </li>
+    
+
+                <li class="breadcrumb-item">
+            
+                <a href="/cgi-bin/koha/opac-user.pl">    RAFAT SHAHRIAR</a>
+            
+        </li>
+    
+
+            
+    
+        <li class="breadcrumb-item active">
+            <a href="#" aria-current="page">
+                
+                <span>Your personal details</span>
+            
+            </a>
+        </li>
+            
+        </ol>
+    </nav>
+
+
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col col-lg-2 order-2 order-lg-1">
+                <div id="navigation">
+                    
+
+
+    
+    
+        <div id="OpacNav">
+            
+                <div class="default_item">
+                    
+                    <div class="default_body"><style>
+#listds ul li {
+    width: 100%;
+    height: 35px;
+    display: flex;
+    align-items: center;
+    margin-right: 1.5em;
+    margin-top: 1.5em;
+    margin-bottom: 1.5em;    
+    cursor: pointer;
+    padding: 1em;
+    background: rgb(43, 43, 43);
+    position: relative;
+    color: white;
+    border-radius: 5px;
+}
+#listds ul li  a{
+ color: white;
+}
+#listds ul li::before,
+#listds ul li::after {
+    content: "";
+    position: absolute;
+    z-index: -1;
+    border-radius: 5px;
+    width: 105%;
+    transition: all 0.4s;
+}
+#listds ul li::before {
+    left: 0%;
+    height: 130%;
+    background: linear-gradient(to right, #021B79, #0575E6);
+}
+#listds ul li::after {
+    left: -10%;
+    height: 120%;
+    background: #ffffff56;
+    backdrop-filter: blur(10px);
+    box-shadow: 0 0 20px rgba(0, 0, 0, 0.164);
+}
+#listds ul li:hover::before {
+    transform: translateX(-2.5%);
+}
+#listds ul li:hover::after {
+    transform: translateX(15%);
+}
+</style>
+<div id="listds">
+<ul>
+<li><a href="https://www.iiuc.ac.bd" target="_blank" rel="noopener">IIUC Home</a></li>
+<li><a href="https://library.iiuc.ac.bd" target="blank">Library Home</a></li>
+<li><a href="https://dspace.iiuc.ac.bd" target="_blank" rel="noopener">IIUC Repository</a></li>
+</ul>
+</div></div>
+                </div>
+            
+        </div>
+    
+
+
+
+
+    <div id="usermenu">
+
+
+    <div id="menu">
+        <ul>
+            
+                <li>
+            
+                <a href="/cgi-bin/koha/opac-user.pl">Summary</a></li>
+            
+                
+                    <li>
+                
+                <a href="/cgi-bin/koha/opac-account.pl">Charges</a></li>
+            
+
+            
+                <li class="active">
+            
+                <a href="/cgi-bin/koha/opac-memberentry.pl">Personal details</a></li>
+
+            
+
+            
+                
+                    <li>
+                
+                <a href="/cgi-bin/koha/opac-tags.pl?mine=1">Tags</a></li>
+            
+
+            
+                
+                    <li>
+                
+                <a href="/cgi-bin/koha/opac-passwd.pl">Change password</a></li>
+            
+
+            
+
+            
+                
+                    <li>
+                
+                <a href="/cgi-bin/koha/opac-readingrecord.pl">Checkout history</a></li>
+                
+            
+
+            
+
+            
+
+            
+                
+                    <li>
+                
+                <a href="/cgi-bin/koha/opac-suggestions.pl">Purchase suggestions</a></li>
+            
+
+            
+                
+                    
+                        <li>
+                    
+                    <a href="/cgi-bin/koha/opac-messaging.pl">Messaging</a></li>
+                 
+            
+
+            
+                
+                    <li>
+                
+                <a href="/cgi-bin/koha/opac-shelves.pl?op=list">Lists</a></li>
+            
+
+            
+
+            
+
+            
+
+            
+
+            
+
+        </ul>
+    </div>
+
+</div>
+
+
+
+
+                </div>
+            </div>
+            <div class="col-md-12 col-lg-10 order-1">
+
+                <h1>Your personal details</h1>
+
+                
+                    <div id="update-account" class="maincontent">
+                
+
+                
+                    
+                    
+                
+
+                
+
+                
+
+                
+
+                
+
+                
+
+                
+
+                
+
+                <form method="post" action="/cgi-bin/koha/opac-memberentry.pl" id="memberentry-form" autocomplete="off" novalidate="novalidate">
+
+                
+                    
+                
+                    
+                
+                    
+                
+                    
+                
+                    
+                
+                    
+                
+                    
+                
+                    
+                
+                    
+                
+                    
+                
+                    
+                
+                    
+                
+                    
+                
+                    
+                
+                    
+                
+                    
+                
+                    
+                
+                    
+                
+                    
+                
+                    
+                
+                    
+                
+                    
+                
+                    
+                
+                    
+                
+                    
+                
+                    
+                
+                    
+                
+                    
+                
+                    
+                
+                    
+                
+                    
+                
+                    
+                
+                    
+                
+                    
+                
+                    
+                
+                    
+                
+                    
+                
+                    
+                
+                    
+                
+                    
+                
+                    
+                
+                    
+                
+                    
+                
+                    
+                
+                    
+                
+                    
+                
+                    
+                
+
+                    
+                    
+                        <div class="row">
+                            <div class="col">
+                                <fieldset class="rows" id="memberentry_library">
+
+                                    <legend id="library_legend">Library</legend>
+                                        <ol>
+                                            
+                                            <li>
+
+                                                <label for="borrower_cardnumber" class="">Library card number:</label>
+
+                                                
+                                                    C213004
+                                                
+                                            </li>
+                                            
+
+                                            
+                                                
+                                                <li>
+                                                    <label>Username:</label>
+                                                    C213004
+                                                </li>
+                                                
+                                            
+
+                                            
+                                            <li>
+                                                <label>Expiration date:</label>
+                                                31/12/2025
+                                            </li>
+                                            
+
+                                            
+                                                <li>
+                                                    
+                                                        <label for="borrower_branchcode" class="">Home library:</label>
+
+                                                        <select id="borrower_branchcode" name="borrower_branchcode" class="">
+                                                            
+                                                            
+                                                                
+                                                                    <option value="105" selected="selected">IIUC Central Library</option>
+                                                                
+                                                            
+                                                        </select>
+                                                        <div class="required_label ">Required</div>
+                                                    
+                                                </li>
+                                            
+
+                                            
+                                                <li>
+                                                    <label for="borrower_categorycode" class="">
+                                                    Category:</label>
+
+                                                    
+                                                        UG_Student
+                                                        <input type="hidden" name="borrower_categorycode" value="105">
+                                                    
+                                                </li>
+                                            
+                                        </ol>
+                                    </fieldset>
+                                </div> <!-- /.col -->
+                            </div> <!-- /.row -->
+                    
+
+                    
+                    
+                        <div class="row">
+                            <div class="col">
+                                <fieldset class="rows" id="memberentry_identity">
+                                    <legend id="identity_legend">Identity</legend>
+
+                                    <ol>
+                                        
+                                            <li>
+                                                <label for="borrower_title" class="">Salutation:</label>
+
+                                                <select id="borrower_title" name="borrower_title" class="">
+                                                    <option value=""></option>
+                                                    
+                                                        
+                                                            <option value="Mr">Mr</option>
+                                                        
+                                                    
+                                                        
+                                                            <option value="Mrs">Mrs</option>
+                                                        
+                                                    
+                                                        
+                                                            <option value="Miss">Miss</option>
+                                                        
+                                                    
+                                                        
+                                                            <option value="Ms">Ms</option>
+                                                        
+                                                    
+                                                </select>
+                                                <div class="required_label ">Required</div>
+                                            </li>
+                                        
+
+                                        
+                                            <li>
+                                                <label for="borrower_surname" class="">Surname:</label>
+
+                                                <input type="text" id="borrower_surname" name="borrower_surname" value="RAFAT SHAHRIAR" class="">
+                                                <div class="required_label ">Required</div>
+                                            </li>
+                                        
+
+                                        
+                                            <li>
+                                                <label for="borrower_firstname" class="">First name:</label>
+
+                                                <input type="text" id="borrower_firstname" name="borrower_firstname" value="" class="">
+                                                <div class="required_label ">Required</div>
+                                            </li>
+                                        
+
+                                        
+                                            <li>
+                                                <label for="borrower_middle_name" class="">Middle name:</label>
+
+                                                <input type="text" id="borrower_middle_name" name="borrower_middle_name" value="" class="">
+                                                <div class="required_label ">Required</div>
+                                            </li>
+                                        
+
+                                        
+                                            <li>
+                                                <label for="borrower_dateofbirth" class="">Date of birth:</label>
+
+                                                <input type="hidden" id="borrower_dateofbirth" name="borrower_dateofbirth" value="2001-10-11" size="10" class="flatpickr pastdate flatpickr-input"><span class="flatpickr_wrapper"><input class=" flatpickr pastdate flatpickr-input" placeholder="" tabindex="0" type="text"><a href="#" class="clear_date fa fa-fw fa-times" aria-hidden="true" aria-label="Clear date"></a></span>
+
+                                                <div class="required_label ">Required</div>
+                                            </li>
+                                        
+
+                                        
+                                            <li>
+                                                <label for="borrower_initials" class="">Initials:</label>
+
+                                                <input type="text" id="borrower_initials" name="borrower_initials" value="" class="">
+                                                <div class="required_label ">Required</div>
+                                            </li>
+                                        
+
+                                        
+                                            <li>
+                                                <label for="borrower_pronouns" class="">Pronouns:</label>
+
+                                                <input type="text" id="borrower_pronouns" name="borrower_pronouns" value="" class="">
+                                                <div class="required_label ">Required</div>
+                                            </li>
+                                        
+
+                                        
+                                            <li>
+                                                <label for="borrower_othernames" class="">Other names:</label>
+
+                                                <input type="text" id="borrower_othernames" name="borrower_othernames" value="" class="">
+                                                <div class="required_label ">Required</div>
+                                            </li>
+                                        
+
+                                        
+                                            <li class="lradio">
+                                                <div class="label"></div>
+                                                <label for="sex-female" class="radio inline"><span class="patronsex-female">Female:</span></label>
+                                                
+                                                    <input type="radio" name="borrower_sex" id="sex-female" value="F">
+                                                
+
+                                                <label for="sex-male" class="radio inline"><span class="patronsex-male">Male:</span></label>
+                                                
+                                                    <input type="radio" name="borrower_sex" id="sex-male" value="M" checked="checked">
+                                                
+
+                                                <label for="sex-other" class="radio inline"><span class="patronsex-other">Other:</span></label>
+                                                
+                                                    <input type="radio" name="borrower_sex" id="sex-other" value="O">
+                                                
+
+                                                <label for="sex-none" class="radio inline"><span class="patronsex-none">None specified:</span></label>
+                                                
+                                                    <input type="radio" name="borrower_sex" id="sex-none" value="">
+                                                
+                                            </li>
+                                        
+                                    </ol>
+                                </fieldset>
+                            </div> <!-- /.col -->
+                            
+                                <div class="col-sm-2">
+                                    <p class="patronimage">
+                                       <img src="/cgi-bin/koha/opac-patron-image.pl" alt="">
+                                    </p>
+                                </div>
+                            
+                        </div> <!-- /.row -->
+                    
+
+                    
+                    
+                        <div class="row">
+                            <div class="col">
+                                <fieldset class="rows" id="memberentry_mainaddress">
+                                    <legend id="mainaddress_legend">Main address</legend>
+
+                                    <ol>
+                                        
+    
+        <li>
+            <label for="borrower_streetnumber" class="">Street number:</label>
+
+            <input type="text" id="borrower_streetnumber" name="borrower_streetnumber" value="" class="" size="5" maxlength="10">
+            <div class="required_label ">Required</div>
+        </li>
+    
+
+
+                                        
+                                        
+
+                                        
+                                            <li>
+                                                <label for="borrower_address" class="">Address:</label>
+
+                                                <input type="text" id="borrower_address" name="borrower_address" value="170/A, WEST BAGGHONA ### LALKHAN BAZAR ###  ###  ### DAMPARA ### KHULSHI ### Chattogram" class="">
+                                                <div class="required_label ">Required</div>
+                                            </li>
+                                        
+
+                                        
+
+                                        
+                                            <li>
+                                                <label for="borrower_address2" class="">Address 2:</label>
+
+                                                <input type="text" id="borrower_address2" name="borrower_address2" value="170/A, WEST BAGGHONA ### LALKHAN BAZAR ###  ###  ### DAMPARA ### KHULSHI ### Chattogram" class="">
+                                                <div class="required_label ">Required</div>
+                                            </li>
+                                        
+
+                                        
+                                            <li>
+                                                <label for="borrower_city" class="">City:</label>
+
+                                                <input type="text" id="borrower_city" name="borrower_city" value="" class="">
+                                                <div class="required_label ">Required</div>
+                                            </li>
+                                        
+
+                                        
+                                            <li>
+                                                <label for="borrower_state" class="">State:</label>
+
+                                                <input type="text" id="borrower_state" name="borrower_state" value="" class="">
+                                                <div class="required_label ">Required</div>
+                                            </li>
+                                        
+
+                                        
+                                            <li>
+                                                <label for="borrower_zipcode" class="">ZIP/Postal code:</label>
+
+                                                <input type="text" id="borrower_zipcode" name="borrower_zipcode" value="" class="">
+                                                <div class="required_label ">Required</div>
+                                            </li>
+                                        
+
+                                        
+                                            <li>
+                                                <label for="borrower_country" class="">Country:</label>
+
+                                                <input type="text" id="borrower_country" name="borrower_country" value="Bangladeshi" class="">
+                                                <div class="required_label ">Required</div>
+                                            </li>
+                                        
+
+                                    </ol>
+                                </fieldset>
+                            </div> <!-- /.col -->
+                        </div> <!-- /.row -->
+                    
+
+                    
+                    
+                        <div class="row">
+                            <div class="col">
+                                <fieldset class="rows" id="memberentry_contact">
+                                    <legend id="contact_legend">Contact information</legend>
+
+                                    <ol>
+                                        
+                                            <li>
+                                                <label for="borrower_phone" class="">Primary phone:</label>
+
+                                                <input type="text" id="borrower_phone" name="borrower_phone" value="" class="">
+                                                <div class="required_label ">Required</div>
+                                            </li>
+                                        
+
+                                        
+                                            <li>
+                                                <label for="borrower_phonepro" class="">Secondary phone:</label>
+
+                                                <input type="text" id="borrower_phonepro" name="borrower_phonepro" value="" class="">
+                                                <div class="required_label ">Required</div>
+                                            </li>
+                                        
+
+                                        
+                                            <li>
+                                                <label for="borrower_mobile" class="">Other phone:</label>
+
+                                                <input type="text" id="borrower_mobile" name="borrower_mobile" value="01795621490" class="">
+                                                <div class="required_label ">Required</div>
+                                            </li>
+                                        
+
+                                        
+                                            <li>
+                                                <label for="borrower_email" class="">Primary email:</label>
+
+                                                <input type="text" id="borrower_email" name="borrower_email" value="rshahriar877@gmail.com" class="">
+                                                <div class="required_label ">Required</div>
+                                            </li>
+
+                                            
+                                        
+
+                                        
+                                            <li>
+                                                <label for="borrower_emailpro" class="">Secondary email:</label>
+
+                                                <input type="text" id="borrower_emailpro" name="borrower_emailpro" value="" class="">
+                                                <div class="required_label ">Required</div>
+                                            </li>
+                                        
+
+                                        
+                                            <li>
+                                                <label for="borrower_fax" class="">Fax:</label>
+
+                                                <input type="text" id="borrower_fax" name="borrower_fax" value="" class="">
+                                                <div class="required_label ">Required</div>
+                                            </li>
+                                        
+
+                                        
+                                            <li>
+                                                
+                                                    <label for="borrower_primary_contact_method">Main contact method:</label>
+                                                
+
+                                                <select id="borrower_primary_contact_method" name="borrower_primary_contact_method">
+                                                    <option value=""></option>
+                                                    
+                                                        
+                                                            <option value="phone">Primary phone</option>
+                                                        
+                                                    
+                                                    
+                                                        
+                                                            <option value="phonepro">Secondary phone</option>
+                                                        
+                                                    
+                                                    
+                                                        
+                                                            <option value="mobile">Other phone</option>
+                                                        
+                                                    
+                                                    
+                                                        
+                                                            <option value="email">Primary email</option>
+                                                        
+                                                    
+                                                    
+                                                        
+                                                            <option value="emailpro">Secondary email</option>
+                                                        
+                                                    
+                                                    
+                                                        
+                                                            <option value="fax">Fax</option>
+                                                        
+                                                    
+                                                </select>
+                                                
+                                            </li>
+                                            
+                                                <li>
+                                                    
+                                                        <label for="borrower_lang">Preferred language for notices: </label>
+                                                    
+                                                    <select id="borrower_lang" name="borrower_lang">
+                                                        <option value="default">Default</option>
+                                                        
+                                                            
+                                                                
+                                                                    
+                                                                        <option value="en">English (en)</option>
+                                                                    
+                                                                
+                                                            
+                                                        
+                                                            
+                                                                
+                                                                    
+                                                                        <option value="bn-IN">বাংলা (bn-IN)</option>
+                                                                    
+                                                                
+                                                            
+                                                        
+                                                            
+                                                                
+                                                                    
+                                                                        <option value="ar-Arab">لعربية (ar-Arab)</option>
+                                                                    
+                                                                
+                                                            
+                                                        
+                                                    </select> <!-- /#lang -->
+                                                    
+                                                </li>
+                                            
+                                        
+                                    </ol>
+                                </fieldset>
+                            </div> <!-- /.col -->
+                        </div> <!-- /.row -->
+                    
+
+                    
+                    
+                        <div class="row">
+                            <div class="col">
+                                <fieldset class="rows" id="memberentry_alternateaddress">
+                                    <legend id="alternateaddress_legend">Alternate address</legend>
+
+                                    <ol>
+                                        
+    
+        <li>
+            <label for="borrower_B_streetnumber" class="">Street number:</label>
+
+            <input type="text" id="borrower_B_streetnumber" name="borrower_B_streetnumber" value="" class="" size="5" maxlength="10">
+            <div class="required_label ">Required</div>
+        </li>
+    
+
+
+                                        
+                                        
+                                        
+                                            <li>
+                                                <label for="borrower_B_address" class="">Address:</label>
+
+                                                <input type="text" id="borrower_B_address" name="borrower_B_address" value="" class="">
+                                                <div class="required_label ">Required</div>
+                                            </li>
+                                        
+
+                                        
+
+                                        
+                                            <li>
+                                                <label for="borrower_B_address2" class="">Address 2:</label>
+
+                                                <input type="text" id="borrower_B_address2" name="borrower_B_address2" value="" class="">
+                                                <div class="required_label ">Required</div>
+                                            </li>
+                                        
+
+                                        
+                                            <li>
+                                                <label for="borrower_B_city" class="">City:</label>
+
+                                                <input type="text" id="borrower_B_city" name="borrower_B_city" value="" class="">
+                                                <div class="required_label ">Required</div>
+                                            </li>
+                                        
+
+                                        
+                                            <li>
+                                                <label for="borrower_B_state" class="">State:</label>
+
+                                                <input type="text" id="borrower_B_state" name="borrower_B_state" value="" class="">
+                                                <div class="required_label ">Required</div>
+                                            </li>
+                                        
+
+                                        
+                                            <li>
+                                                <label for="borrower_B_zipcode" class="">ZIP/Postal code:</label>
+
+                                                <input type="text" id="borrower_B_zipcode" name="borrower_B_zipcode" value="" class="">
+                                                <div class="required_label ">Required</div>
+                                            </li>
+                                        
+
+                                        
+                                            <li>
+                                                <label for="borrower_B_country" class="">Country:</label>
+
+                                                <input type="text" id="borrower_B_country" name="borrower_B_country" value="" class="">
+                                                <div class="required_label ">Required</div>
+                                            </li>
+                                        
+
+                                        
+                                            <li>
+                                                <label for="borrower_B_phone" class="">Phone:</label>
+
+                                                <input type="text" id="borrower_B_phone" name="borrower_B_phone" value="" class="">
+                                                <div class="required_label ">Required</div>
+                                            </li>
+                                        
+
+                                        
+                                            <li>
+                                                <label for="borrower_B_email" class="">Email:</label>
+
+                                                <input type="text" id="borrower_B_email" name="borrower_B_email" value="" class="">
+                                                <div class="required_label ">Required</div>
+                                            </li>
+                                        
+
+                                        
+                                            <li>
+                                                <label for="borrower_contactnote" class="">Contact note:</label>
+
+                                                <textarea id="borrower_contactnote" name="borrower_contactnote" cols="30" rows="2" class=""></textarea>
+                                                <div class="required_label ">Required</div>
+                                            </li>
+                                        
+
+                                    </ol>
+                                </fieldset>
+                            </div> <!-- /.col -->
+                        </div> <!-- /.row -->
+                    
+
+                    
+                    
+                        <div class="row">
+                            <div class="col">
+                                <fieldset class="rows" id="memberentry_alternatecontact">
+                                    <legend id="alternatecontact_legend">Alternate contact</legend>
+
+                                    <ol>
+                                        
+                                            <li>
+                                                <label for="borrower_altcontactsurname" class="">Surname:</label>
+
+                                                <input type="text" id="borrower_altcontactsurname" name="borrower_altcontactsurname" value="" class="">
+                                                <div class="required_label ">Required</div>
+                                            </li>
+                                        
+
+                                        
+                                            <li>
+                                                <label for="borrower_altcontactfirstname" class="">First name:</label>
+
+                                                <input type="text" id="borrower_altcontactfirstname" name="borrower_altcontactfirstname" value="" class="">
+                                                <div class="required_label ">Required</div>
+                                            </li>
+                                        
+
+                                        
+                                            <li>
+                                                <label for="borrower_altcontactaddress1" class="">Address:</label>
+
+                                                <input type="text" id="borrower_altcontactaddress1" name="borrower_altcontactaddress1" value="" class="">
+                                                <div class="required_label ">Required</div>
+                                            </li>
+                                        
+
+                                        
+                                            <li>
+                                                <label for="borrower_altcontactaddress2" class="">Address 2:</label>
+
+                                                <input type="text" id="borrower_altcontactaddress2" name="borrower_altcontactaddress2" value="" class="">
+                                                <div class="required_label ">Required</div>
+                                            </li>
+                                        
+
+                                        
+                                            <li>
+                                                <label for="borrower_altcontactaddress3" class="">City:</label>
+
+                                                <input type="text" id="borrower_altcontactaddress3" name="borrower_altcontactaddress3" value="" class="">
+                                                <div class="required_label ">Required</div>
+                                            </li>
+                                        
+
+                                        
+                                            <li>
+                                                <label for="borrower_altcontactstate" class="">State:</label>
+
+                                                <input type="text" id="borrower_altcontactstate" name="borrower_altcontactstate" value="" class="">
+                                                <div class="required_label ">Required</div>
+                                            </li>
+                                        
+
+                                        
+                                            <li>
+                                                <label for="borrower_altcontactzipcode" class="">ZIP/Postal code:</label>
+
+                                                <input type="text" id="borrower_altcontactzipcode" name="borrower_altcontactzipcode" value="" class="">
+                                                <div class="required_label ">Required</div>
+                                            </li>
+                                        
+
+                                        
+                                            <li>
+                                                <label for="borrower_altcontactcountry" class="">Country:</label>
+
+                                                <input type="text" id="borrower_altcontactcountry" name="borrower_altcontactcountry" value="" class="">
+                                                <div class="required_label ">Required</div>
+                                            </li>
+                                        
+
+                                        
+                                            <li>
+                                                <label for="borrower_altcontactphone" class="">Phone:</label>
+
+                                                <input type="text" id="borrower_altcontactphone" name="borrower_altcontactphone" value="" class="">
+                                                <div class="required_label ">Required</div>
+                                            </li>
+                                        
+                                    </ol>
+                                </fieldset>
+                            </div> <!-- /.col -->
+                        </div> <!-- /.row -->
+                    
+
+                    
+
+                    
+
+                    
+
+                   
+
+                    <div class="row">
+                        <div class="col">
+                            
+                                
+                                    <fieldset class="action">
+                                        <input type="hidden" name="action" value="update">
+                                        <input type="hidden" name="csrf_token" value="c6748b9b7c98508ac9de3f1461c960eaef870bc7,b590fb0ff12886632b447f79082ddbb89414e003,1779721497">
+                                        <input type="submit" class="btn btn-primary" value="Submit update request">
+                                    </fieldset>
+                                
+                            
+                        </div> <!-- /.col -->
+                    </div> <!-- /.row -->
+
+                </form>
+
+                    </div><!--/div#update-account -->
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+        
+        
+            <div class="container-fluid">
+                <div class="row">
+                    <div class="col">
+                        
+    
+        <div id="opaccredits">
+            
+                <div class="default_item">
+                    
+                    <div class="default_body"><p align="center"><strong>All Right Reserved by <a href="https://www.iiuc.ac.bd">IIUC</a></strong><br><strong>Implemented by <a href="https://www.facebook.com/emon88">ITD, IIUC</a></strong><br><strong>Koha Updated on 05 April 2024</strong></p></div>
+                </div>
+            
+        </div>
+    
+
+                    </div>
+                </div>
+            </div>
+        
+
+        
+            <div class="container-fluid">
+                <div class="row">
+                    <div class="col">
+                        <div id="report-koha-url">
+                            <div class="row justify-content-between">
+                                
+                                
+                                    <div class="col">
+                                        <div id="koha_url" class="clearfix noprint">
+                                            <p>Powered by
+                                            
+                                                <a class="koha_url" rel="nofollow" href="http://koha-community.org">Koha</a>
+                                            </p>
+                                        </div> <!-- /#koha_url -->
+                                    </div> <!-- /.col -->
+                                
+                            </div> <!-- /.row.justify-content-between -->
+                        </div> <!-- /#report-koha-url -->
+                    </div> <!-- /.col -->
+                </div> <!-- /.row -->
+            </div> <!-- /.container-fluid -->
+        
+    </div> <!-- / #wrapper in masthead.inc -->
+
+    
+        
+    
+
+
+
+
+<!-- CookieConsentedJS code that may run -->
+
+
+<!-- JavaScript includes -->
+<script src="/opac-tmpl/lib/jquery/jquery-3.6.0.min_23.1103000.js"></script>
+<script src="/opac-tmpl/lib/jquery/jquery-migrate-3.3.2.min_23.1103000.js"></script>
+<script src="/opac-tmpl/lib/bootstrap/js/bootstrap.bundle.min_23.1103000.js"></script>
+<script src="/opac-tmpl/lib/fontfaceobserver.min_23.1103000.js"></script>
+<script src="/opac-tmpl/lib/enquire.min_23.1103000.js"></script>
+<script>
+    let logged_in_user_id = "56314";
+</script>
+<script src="/opac-tmpl/bootstrap/js/global_23.1103000.js"></script>
+
+    <script src="/opac-tmpl/bootstrap/js/amazonimages_23.1103000.js"></script>
+
+
+<script>
+    
+
+    
+        $(window).load(function() {
+            verify_images();
+         });
+    
+    $(".print-large").on("click",function(){
+        window.print();
+        return false;
+    });
+    $(".addtoshelf").on("click",function(e){
+        e.preventDefault();
+        Dopop( this.href );
+    });
+    $("body").on("click", ".addtocart", function(e){
+        e.preventDefault();
+        var biblionumber = $(this).data("biblionumber");
+        addRecord( biblionumber );
+    });
+    $("body").on("click", ".cartRemove", function(e){
+        e.preventDefault();
+        var biblionumber = $(this).data("biblionumber");
+        delSingleRecord( biblionumber );
+    });
+    $(".clearsh").on("click", function(){
+        return confirmDelete( _("Are you sure you want to delete your search history?") );
+    });
+
+</script>
+
+
+    <script src="/opac-tmpl/bootstrap/js/basket_23.1103000.js"></script>
+
+
+<script src="/opac-tmpl/bootstrap/js/tags_23.1103000.js"></script>
+
+
+
+
+
+
+
+
+
+<script src="/opac-tmpl/lib/js-cookie/js.cookie-3.0.1.min_23.1103000.js"></script>
+<script>
+$(document).ready(function() {
+    if($('#searchsubmit').length) {
+        $(document).on("click", '#searchsubmit', function(e) {
+            Cookies.remove("form_serialized", { path: '/'});
+            Cookies.remove("form_serialized_limits", { path: '/'});
+            Cookies.remove("search_path_code", { path: '/'});
+        });
+    }
+});
+</script>
+
+
+
+
+<script src="/opac-tmpl/lib/dayjs/dayjs.min_23.1103000.js"></script>
+<script src="/opac-tmpl/lib/dayjs/plugin/timezone_23.1103000.js"></script>
+<script src="/opac-tmpl/lib/dayjs/plugin/utc_23.1103000.js"></script>
+<script>
+    dayjs.extend(window.dayjs_plugin_utc);
+    dayjs.extend(window.dayjs_plugin_timezone);
+</script>
+
+<!-- js-date-format.inc -->
+<script>
+    (function() {
+        var def_date_format = 'metric';
+        var def_time_format = '24hr';
+        var def_tz = 'Asia/Dhaka';
+
+        var get_date_pattern = function(format) {
+            var date_pattern = 'YYYY-MM-DD';
+            if(format == 'us') date_pattern = 'MM/DD/YYYY';
+            if(format == 'metric') date_pattern = 'DD/MM/YYYY';
+            if(format == 'dmydot') date_pattern = 'DD.MM.YYYY';
+            return date_pattern;
+        };
+
+        var get_time_pattern = function(format) {
+            var time_pattern = 'HH:mm';
+            if(format == '12hr') time_pattern = 'hh:mm a';
+            return time_pattern;
+        };
+
+        /*
+         * A JS equivilent of the KohaDates TT Plugin. Passed an rfc3339 formatted date string,
+         * or JS Date, the function will return a date string formatted as per the koha instance config.
+         * Optionally accepts a dateformat parameter to allow override of the configured output format
+         * as well as a 'withtime' boolean denoting whether to include time or not in the output string.
+         */
+        window.$date = function(value, options) {
+            if(!value) return '';
+            var tz = (options&&options.tz)||def_tz;
+            var m = dayjs(value);
+            if ( ! value.match(/^\d{4}-\d{2}-\d{2}$/ ) ) {
+                m = m.tz(tz);
+            }
+
+            var dateformat = (options&&options.dateformat)||def_date_format;
+            var withtime = (options&&options.withtime)||false;
+
+            if(dateformat=='rfc3339' && withtime) return m.format();
+
+            var timeformat = (options&&options.timeformat)||def_time_format;
+            var date_pattern = get_date_pattern(dateformat);
+            var time_pattern = !withtime?'':' '+get_time_pattern(timeformat);
+
+            return m.format(date_pattern+time_pattern);
+        }
+
+        window.$datetime = function(value, options) {
+            options = options||{};
+            options.withtime = true;
+            return $date(value, options);
+        };
+
+        window.$time = function(value, options) {
+            if(!value) return '';
+            var tz = (options&&options.tz)||def_tz;
+            var m = dayjs(value);
+            if(tz) m = m.tz(tz);
+
+            var dateformat = (options&&options.dateformat);
+            var timeformat = (dateformat=='rfc3339'&&'24hr')||(options&&options.timeformat)||def_time_format;
+
+            return m.format(get_time_pattern(timeformat)+(dateformat=='rfc3339'?':ss'+(!m.isUTC()?'Z':''):''))+(dateformat=='rfc3339' && m.isUTC()?'Z':'');
+        }
+
+    })();
+</script>
+<!-- / js-date-format.inc -->
+
+<script>
+    (function() {
+        /**
+         * Format the biblio response from a Koha RESTful API request.
+         * @param  {Object}  biblio  The biblio json object as returned from the Koha RESTful API
+         * @param  {Object}  config  A configuration object
+         *                           Valid keys are: `link`
+         * @return {string}          The formatted HTML string
+         */
+        window.$biblio_to_html = function(biblio, config) {
+
+            if (biblio === undefined) {
+                return ''; // empty string for no biblio
+            }
+
+            var title = '<span class="biblio-title">';
+            if (biblio.title != null && biblio.title != '') {
+                title += escape_str(biblio.title);
+            } else {
+                title += _("No title");
+            }
+            title += '</span>';
+
+            // add subtitle
+            if (biblio.subtitle != null && biblio.subtitle != '') {
+                title += ' <span class="biblio-subtitle">' + escape_str(biblio.subtitle) + '</span>';
+            }
+
+            // set title as link
+            if (config && config.link) {
+                if (config.link === 'marcdetail') {
+                    title = '<a href="/cgi-bin/koha/opac-MARCdetail.pl?biblionumber=' + encodeURIComponent(biblio.biblio_id) + '" class="title">' + title + '</a>';
+                } else if (config.link === 'labeled_marc') {
+                    title = '<a href="/cgi-bin/koha/opac-labeledMARCdetail.pl?biblionumber=' + encodeURIComponent(biblio.biblio_id) + '" class="title">' + title + '</a>';
+                } else if (config.link === 'isbd') {
+                    title = '<a href="/cgi-bin/koha/opac-ISBDdetail.pl?biblionumber=' + encodeURIComponent(biblio.biblio_id) + '" class="title">' + title + '</a>';
+                } else {
+                    title = '<a href="/cgi-bin/koha/opac-detail.pl?biblionumber=' + encodeURIComponent(biblio.biblio_id) + '" class="title">' + title + '</a>';
+                }
+            }
+
+            // add medium
+            if (biblio.medium != null && biblio.medium != '') {
+                title += ' <span class="biblio-medium">' + escape_str(biblio.medium) + '</span>';
+            }
+
+            // add part numbers/names
+            let part_numbers = (typeof biblio.part_number === 'string') ? biblio.part_number.split("|") : [];
+            let part_names = (typeof biblio.part_name === 'string') ? biblio.part_name.split("|") : [];
+            let i = 0;
+            while (part_numbers[i] || part_names[i]) {
+                if (part_numbers[i]) {
+                    title += ' <span class="part-number">' + escape_str(part_numbers[i]) + '</span>';
+                }
+                if (part_names[i]) {
+                    title += ' <span class="part-name">' + escape_str(part_names[i]) + '</span>';
+                }
+                i++;
+            }
+
+            return title;
+        };
+    })();
+</script>
+
+
+    <!-- validator-strings.inc -->
+<script>
+    $(document).ready(function(){
+        jQuery.extend(jQuery.validator.messages, {
+            required: _("This field is required."),
+            remote: _("Please fix this field."),
+            email: _("Please enter a valid email address."),
+            url: _("Please enter a valid URL."),
+            date: _("Please enter a valid date."),
+            dateISO: _("Please enter a valid date (ISO)."),
+            number: _("Please enter a valid number."),
+            digits: _("Please enter only digits."),
+            equalTo: _("Please enter the same value again."),
+            maxlength: $.validator.format(_("Please enter no more than {0} characters.")),
+            minlength: $.validator.format(_("Please enter at least {0} characters.")),
+            rangelength: $.validator.format(_("Please enter a value between {0} and {1} characters long.")),
+            range: $.validator.format(_("Please enter a value between {0} and {1}.")),
+            max: $.validator.format(_("Please enter a value less than or equal to {0}.")),
+            min: $.validator.format(_("Please enter a value greater than or equal to {0}.")),
+            phone: $.validator.format(_("Please enter a valid phone number."))
+        });
+    });
+</script>
+<!-- / validator-strings.inc -->
+
+    <script src="/opac-tmpl/lib/jquery/plugins/jquery.validate.min_23.1103000.js"></script>
+    
+
+
+<script>
+    var flatpickr_weekdays = {
+        shorthand: [ "Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"],
+        longhand: [ "Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday" ]
+    };
+
+    var flatpickr_months = {
+        shorthand: [ "Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"],
+        longhand: [ "January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"]
+    };
+    var debug    = "";
+    var dateformat_pref = "metric";
+    var sentmsg = 0;
+    if (debug > 1) {alert("dateformat: " + dateformat_pref + "\ndebug is on (level " + debug + ")");}
+    var calendarFirstDayOfWeek = '0';
+    var flatpickr_timeformat_string = "H:i";
+    var flatpickr_timeformat = true;
+    var flatpickr_dateformat_string = "";
+    switch ( dateformat_pref ){
+        case "us":
+            flatpickr_dateformat_string = "m/d/Y";
+            break;
+        case "metric":
+            flatpickr_dateformat_string = "d/m/Y";
+            break;
+        case "dmydot":
+            flatpickr_dateformat_string = "d.m.Y";
+            break;
+        default:
+            flatpickr_dateformat_string = "Y-m-d";
+    }
+
+    function get_dateformat_str(dateformat) {
+        var dateformat_str;
+        if (dateformat == 'us') {
+            dateformat_str = 'mm/dd/yyyy';
+        } else if (dateformat == 'metric') {
+            dateformat_str = 'dd/mm/yyyy';
+        } else if (dateformat == 'iso') {
+            dateformat_str = 'yyyy-mm-dd';
+        } else if (dateformat == 'dmydot') {
+            dateformat_str = 'dd.mm.yyyy';
+        }
+        return dateformat_str;
+    }
+</script>
+<script src="/opac-tmpl/lib/flatpickr/flatpickr.min_23.1103000.js"></script>
+<script>
+    flatpickr.l10ns.default.weekdays = flatpickr_weekdays;
+    flatpickr.l10ns.default.months   = flatpickr_months;
+    flatpickr.setDefaults({
+        dateFormat: "Y-m-d",
+        altInput: true,
+        allowInput: true,
+        altFormat: flatpickr_dateformat_string,
+        altInputClass: 'flatpickr-input',
+        nextArrow: '<i class="fa fa-fw fa-arrow-right" aria-hidden="true"></i>',
+        prevArrow: '<i class="fa fa-fw fa-arrow-left" aria-hidden="true"></i>',
+        time_24hr: flatpickr_timeformat,
+        locale: {
+            "firstDayOfWeek": calendarFirstDayOfWeek
+        },
+        onReady: function( selectedDates, dateStr, instance ){
+            /* When flatpickr instance is created, automatically append a "clear date" link */
+            if( $(instance.input).hasClass("futuredate") ){
+                instance.set("minDate", new Date().fp_incr(1));
+            }
+            if( $(instance.input).hasClass("pastdate") ){
+                instance.set("maxDate", new Date().fp_incr(-1));
+            }
+            $(instance.input).find('~input.flatpickr:first')
+                /* Add a wrapper element so that we can prevent the clear button from wrapping */
+                .wrap("<span class='flatpickr_wrapper'></span>")
+                .after( $("<a/>")
+                    .attr("href","#")
+                    .addClass("clear_date")
+                    .on("click", function(e){
+                        e.preventDefault();
+                        instance.clear();
+                    })
+                    .addClass("fa fa-fw fa-times")
+                    .attr("aria-hidden", true)
+                    .attr("aria-label", _("Clear date") )
+                ).keydown(function(e) {
+                    var key = (event.keyCode ? event.keyCode : event.which);
+                    if ( key == 40 ) {
+                        instance.set('allowInput',false);
+                    }
+                });
+        },
+        onClose: function( selectedDates, dateText, instance) {
+            validate_date( dateText, instance );
+            var thisInput = instance.input;
+            if ( thisInput.hasAttribute('data-start_for') ) {
+                var endPicker = document.querySelector("#"+thisInput.dataset.start_for)._flatpickr;
+                endPicker.set('minDate', selectedDates[0]);
+            }
+        },
+    });
+
+    var MSG_PLEASE_ENTER_A_VALID_DATE = ( _("Please enter a valid date (should match %s).") );
+
+    function is_valid_date(date) {
+        // An empty string is considered as a valid date for convenient reasons.
+        if (date === '') return 1;
+        var dateformat = flatpickr_dateformat_string;
+        switch ( dateformat_pref ){
+            case "us":
+                flatpickr_dateformat_string = "m/d/Y";
+                break;
+            case "metric":
+                flatpickr_dateformat_string = "d/m/Y";
+                break;
+            case "dmydot":
+                flatpickr_dateformat_string = "d.m.Y";
+                break;
+            default:
+                flatpickr_dateformat_string = "Y-m-d";
+        }
+        try {
+            flatpickr.parseDate(date, dateformat);
+        } catch (e) {
+            return 0;
+        }
+        return 1;
+    }
+
+    function validate_date(dateText, inst) {
+        if (!is_valid_date(dateText)) {
+            var dateformat_str = get_dateformat_str( dateformat_pref );
+            alert(MSG_PLEASE_ENTER_A_VALID_DATE.format(dateformat_str));
+            inst.clear();
+        }
+    }
+
+        $(document).ready(function(){
+            $(".flatpickr").each(function(){
+                let options = {};
+                let refresh_max_date = 0;
+                let disable_buttons = [];
+
+                if( $(this).data("flatpickr-futureinclusive") === true
+                 || $(this).data("flatpickr-futuredate") === true ) {
+                    let original_date = $(this).val();
+                    if ( original_date ) {
+                        original_date = Date_from_syspref( original_date ).getTime();
+                        let tomorrow = new Date().fp_incr(1).getTime();
+
+                        options['enable'] = [function(date){
+                            date = date.getTime();
+                            if ( date == original_date ) return true;
+                            if ( date >= tomorrow)       return true;
+                        }];
+                    }
+                    else {
+                        if( $(this).data("flatpickr-futureinclusive") === true ) {
+                            options['minDate'] = new Date().setHours(00, 00, 00, 00);
+                        } else {
+                            options['minDate'] = new Date().fp_incr(1);
+                        }
+                    }
+
+                    disable_buttons.push(0); /* Yesterday */
+
+                    if ( $(this).data("flatpickr-futuredate") === true ) {
+                        disable_buttons.push(1); /* Today */
+                    }
+                }
+                if( $(this).data("flatpickr-pastinclusive") === true ) {
+                    options['maxDate'] = new Date(); /* Not today or hh:mm will be 00:00 */
+                    refresh_max_date = 1;
+                    disable_buttons.push(2); /* Tomorrow */
+                }
+                if( $(this).data("flatpickr-pastdate") === true ) {
+                    options['maxDate'] = new Date().fp_incr(-1).setHours(23, 59, 00, 00);
+                    disable_buttons.push(1); /* Today */
+                    disable_buttons.push(2); /* Tomorrow */
+                }
+                if ( $(this).data('flatpickr-enable-time') === true ) {
+                    options['enableTime'] = true;
+                    options['dateFormat'] = flatpickr_dateformat_string + " " + flatpickr_timeformat_string;
+                }
+
+                let fp = $(this).flatpickr(options);
+
+                $(disable_buttons).each(function(index, value){
+                    $(fp.calendarContainer).find(".shortcut-buttons-flatpickr-button[data-index='"+value+"']").prop("disabled", "disabled");
+                });
+
+                if ( refresh_max_date ) {
+                    /* Refresh the maxDate every 30 secondes to make sure the user will not
+                       be stuck with the minute passed.
+                       Adding 1 minute to not introduce a gap.
+                       Example: last update at 40s, a new minute passed at 00.
+                       Between 00 and 10s the user won't be able click 'Today'.
+                    */
+                    setInterval(() => {
+                        let now = new Date();
+                        fp.set("maxDate", now.setMinutes(now.getMinutes() + 1));
+                    }, 30000);
+                }
+            });
+        });
+
+</script>
+
+
+    <script>
+
+        $(document).ready(function() {
+            
+
+            $("#memberentry-form").validate({
+                rules: {
+                    borrower_email: {
+                        email: true
+                    },
+                    borrower_repeat_email: {
+                        equalTo: '#borrower_email'
+                    },
+                    borrower_emailpro: {
+                        email: true
+                    },
+                    borrower_B_email: {
+                        email: true
+                    },
+                    borrower_password: {
+                        password_strong: true,
+                        password_no_spaces: true
+                    },
+                    borrower_password2: {
+                        password_match: true
+                    },
+                    captcha: {
+                        required: true,
+                    }
+                },
+                submitHandler: function(form) {
+                    if (form.beenSubmitted) {
+                        return false;
+                    }
+                    else {
+                        form.beenSubmitted = true;
+                        form.submit();
+                    }
+                }
+            });
+
+            if ( $("input.required").length ) {
+                $("input.required").rules("add", {
+                    required: true
+                });
+            }
+            if ( $("select.required").length ) {
+                $("select.required").rules("add", {
+                    required: true
+                });
+            }
+            if ( $("textarea.required").length ) {
+                $("textarea.required").rules("add", {
+                    required: true
+                });
+            }
+
+            
+
+                
+
+                
+            
+
+            $(".patron-attributes").on( 'click', '.clear-attribute', function(e) {
+                e.preventDefault();
+                $(this).closest("li")
+                    .find('textarea').val("").end()
+                    .find('select').val("").end();
+            } );
+
+            $(".patron-attributes").on( 'click', '.clone-attribute', function() {
+                let li = $(this).closest("li");
+                var clone = li.clone().insertAfter( li );
+
+                var newId = 50 + parseInt(Math.random() * 100000);
+                $('input[type!="hidden"],select,textarea', clone).attr('id', 'patron-attr-' + newId).attr('value', '');
+                $("label", clone).attr('for', 'patron-attr-' + newId).attr('value', '');
+
+                return false;
+            } );
+        });
+
+    
+
+    
+
+    </script>
+    
+<script>
+    var pwd_title = "";
+    var pattern_title = "";
+    var new_password_node_name = "borrower_password";
+    var category_selector = "#borrower_categorycode";
+    var STRONG_MSG = _("Password must contain at least %s characters, including UPPERCASE, lowercase and numbers");
+    var WEAK_MSG = _("Password must contain at least %s characters");
+
+    if(category_selector && $('select'+category_selector).length) {
+        jQuery.validator.addMethod("password_strong", function(value, element){
+            var require_strong = $('select'+category_selector+' option:selected').data('pwdStrong');
+            var min_lenght = $('select'+category_selector+' option:selected').data('pwdLength');
+            var regex_text = require_strong?"(?=.*\\d)(?=.*[a-z])(?=.*[A-Z]).{"+min_lenght+",}":".{"+min_lenght+",}";
+            var pattern_regex = new RegExp(regex_text);
+            return this.optional(element) || pattern_regex.test(value);
+        }, function(unused, element) {
+            var require_strong = $('select'+category_selector+' option:selected').data('pwdStrong');
+            var min_lenght = $('select'+category_selector+' option:selected').data('pwdLength');
+            return (require_strong?STRONG_MSG:WEAK_MSG).format(min_lenght)
+        });
+    } else {
+        
+            pwd_title = WEAK_MSG.format(4);
+            pattern_regex = /.{4,}/;
+        
+        jQuery.validator.addMethod("password_strong", function(value, element){
+            return this.optional(element) || value == '****' || pattern_regex.test(value);
+        }, pwd_title);
+    }
+    jQuery.validator.addMethod("password_no_spaces", function(value, element){
+        return ( this.optional(element) || !value.match(/^\s/) && !value.match(/\s$/) );
+    }, _("Password contains leading and/or trailing spaces"));
+    jQuery.validator.addMethod("password_match", function(value, element){
+        var new_password_node = $("input[name='" + new_password_node_name + "']:first");
+        return value == $(new_password_node).val();
+    }, _("Please enter the same password as above"));
+</script>
+
+
+
+    <script>
+        $("select[name='idx']").append("<option value='bc'>Barcode</option>");
+    </script>
+
+
+
+
+
+
+
+
+
+
+<button id="backtotop" class="btn btn-primary" aria-label="Back to top" style=""><i class="fa fa-arrow-up" aria-hidden="true" title="Scroll to the top of the page"></i></button><div class="flatpickr-calendar animate" tabindex="-1"><div class="flatpickr-months"><span class="flatpickr-prev-month"><i class="fa fa-fw fa-arrow-left" aria-hidden="true"></i></span><div class="flatpickr-month"><div class="flatpickr-current-month"><select class="flatpickr-monthDropdown-months" aria-label="Month" tabindex="-1"><option class="flatpickr-monthDropdown-month" value="0" tabindex="-1">January</option><option class="flatpickr-monthDropdown-month" value="1" tabindex="-1">February</option><option class="flatpickr-monthDropdown-month" value="2" tabindex="-1">March</option><option class="flatpickr-monthDropdown-month" value="3" tabindex="-1">April</option><option class="flatpickr-monthDropdown-month" value="4" tabindex="-1">May</option><option class="flatpickr-monthDropdown-month" value="5" tabindex="-1">June</option><option class="flatpickr-monthDropdown-month" value="6" tabindex="-1">July</option><option class="flatpickr-monthDropdown-month" value="7" tabindex="-1">August</option><option class="flatpickr-monthDropdown-month" value="8" tabindex="-1">September</option><option class="flatpickr-monthDropdown-month" value="9" tabindex="-1">October</option><option class="flatpickr-monthDropdown-month" value="10" tabindex="-1">November</option><option class="flatpickr-monthDropdown-month" value="11" tabindex="-1">December</option></select><div class="numInputWrapper"><input class="numInput cur-year" type="number" tabindex="-1" aria-label="Year" max="2026"><span class="arrowUp"></span><span class="arrowDown"></span></div></div></div><span class="flatpickr-next-month"><i class="fa fa-fw fa-arrow-right" aria-hidden="true"></i></span></div><div class="flatpickr-innerContainer"><div class="flatpickr-rContainer"><div class="flatpickr-weekdays"><div class="flatpickr-weekdaycontainer">
+      <span class="flatpickr-weekday">
+        Sun</span><span class="flatpickr-weekday">Mon</span><span class="flatpickr-weekday">Tue</span><span class="flatpickr-weekday">Wed</span><span class="flatpickr-weekday">Thu</span><span class="flatpickr-weekday">Fri</span><span class="flatpickr-weekday">Sat
+      </span>
+      </div></div><div class="flatpickr-days" tabindex="-1"><div class="dayContainer"><span class="flatpickr-day prevMonthDay" aria-label="September 30, 2001" tabindex="-1">30</span><span class="flatpickr-day " aria-label="October 1, 2001" tabindex="-1">1</span><span class="flatpickr-day " aria-label="October 2, 2001" tabindex="-1">2</span><span class="flatpickr-day " aria-label="October 3, 2001" tabindex="-1">3</span><span class="flatpickr-day " aria-label="October 4, 2001" tabindex="-1">4</span><span class="flatpickr-day " aria-label="October 5, 2001" tabindex="-1">5</span><span class="flatpickr-day " aria-label="October 6, 2001" tabindex="-1">6</span><span class="flatpickr-day " aria-label="October 7, 2001" tabindex="-1">7</span><span class="flatpickr-day " aria-label="October 8, 2001" tabindex="-1">8</span><span class="flatpickr-day " aria-label="October 9, 2001" tabindex="-1">9</span><span class="flatpickr-day " aria-label="October 10, 2001" tabindex="-1">10</span><span class="flatpickr-day selected" aria-label="October 11, 2001" tabindex="-1">11</span><span class="flatpickr-day " aria-label="October 12, 2001" tabindex="-1">12</span><span class="flatpickr-day " aria-label="October 13, 2001" tabindex="-1">13</span><span class="flatpickr-day " aria-label="October 14, 2001" tabindex="-1">14</span><span class="flatpickr-day " aria-label="October 15, 2001" tabindex="-1">15</span><span class="flatpickr-day " aria-label="October 16, 2001" tabindex="-1">16</span><span class="flatpickr-day " aria-label="October 17, 2001" tabindex="-1">17</span><span class="flatpickr-day " aria-label="October 18, 2001" tabindex="-1">18</span><span class="flatpickr-day " aria-label="October 19, 2001" tabindex="-1">19</span><span class="flatpickr-day " aria-label="October 20, 2001" tabindex="-1">20</span><span class="flatpickr-day " aria-label="October 21, 2001" tabindex="-1">21</span><span class="flatpickr-day " aria-label="October 22, 2001" tabindex="-1">22</span><span class="flatpickr-day " aria-label="October 23, 2001" tabindex="-1">23</span><span class="flatpickr-day " aria-label="October 24, 2001" tabindex="-1">24</span><span class="flatpickr-day " aria-label="October 25, 2001" tabindex="-1">25</span><span class="flatpickr-day " aria-label="October 26, 2001" tabindex="-1">26</span><span class="flatpickr-day " aria-label="October 27, 2001" tabindex="-1">27</span><span class="flatpickr-day " aria-label="October 28, 2001" tabindex="-1">28</span><span class="flatpickr-day " aria-label="October 29, 2001" tabindex="-1">29</span><span class="flatpickr-day " aria-label="October 30, 2001" tabindex="-1">30</span><span class="flatpickr-day " aria-label="October 31, 2001" tabindex="-1">31</span><span class="flatpickr-day nextMonthDay" aria-label="November 1, 2001" tabindex="-1">1</span><span class="flatpickr-day nextMonthDay" aria-label="November 2, 2001" tabindex="-1">2</span><span class="flatpickr-day nextMonthDay" aria-label="November 3, 2001" tabindex="-1">3</span><span class="flatpickr-day nextMonthDay" aria-label="November 4, 2001" tabindex="-1">4</span><span class="flatpickr-day nextMonthDay" aria-label="November 5, 2001" tabindex="-1">5</span><span class="flatpickr-day nextMonthDay" aria-label="November 6, 2001" tabindex="-1">6</span><span class="flatpickr-day nextMonthDay" aria-label="November 7, 2001" tabindex="-1">7</span><span class="flatpickr-day nextMonthDay" aria-label="November 8, 2001" tabindex="-1">8</span><span class="flatpickr-day nextMonthDay" aria-label="November 9, 2001" tabindex="-1">9</span><span class="flatpickr-day nextMonthDay" aria-label="November 10, 2001" tabindex="-1">10</span></div></div></div></div></div></body>

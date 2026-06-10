@@ -234,9 +234,9 @@ export function ChatFeed() {
       <div
         ref={scrollContainerRef}
         onScroll={handleScroll}
-        className="flex-1 overflow-y-auto p-lg pb-[120px] custom-scrollbar "
+        className="flex-1 overflow-y-auto px-lg py-md pb-[120px] custom-scrollbar "
       >
-        <div className="max-w-3xl mx-auto flex flex-col gap-lg">
+        <div className="max-w-3xl mx-auto flex flex-col gap-md">
           {/* System/Context Notification */}
           <div className="text-center py-md">
             <span className="inline-flex items-center gap-xs px-sm py-xs border border-outline-variant bg-surface rounded-DEFAULT font-code-sm text-code-sm text-on-surface-variant">
@@ -265,9 +265,9 @@ export function ChatFeed() {
                     key={index}
                     id={`message-${index}`}
                     data-message-index={index}
-                    className="flex flex-col gap-xs bg-surface p-md border-l-2 border-primary-container rounded-r-[4px] shadow-[0_1px_6px_rgba(0,0,0,0.2)]"
+                    className="flex flex-col gap-1 bg-surface px-md py-sm border-l-2 border-primary-container rounded-r-[4px] shadow-[0_1px_6px_rgba(0,0,0,0.2)]"
                   >
-                    <div className="flex items-center gap-sm text-primary-container mb-xs">
+                    <div className="flex items-center gap-sm text-primary-container mb-1">
                       <span className="material-symbols-outlined text-[16px]">
                         smart_toy
                       </span>

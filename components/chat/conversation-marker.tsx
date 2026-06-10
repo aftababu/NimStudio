@@ -1,8 +1,8 @@
 "use client";
 
-import React, { useState } from 'react';
-import { ConversationTooltip } from './conversation-tooltip';
-import { useChatStore } from '../../lib/store';
+import React, { useState } from "react";
+import { ConversationTooltip } from "./conversation-tooltip";
+import { useChatStore } from "../../lib/store";
 
 interface ConversationMarkerProps {
   index: number;
@@ -22,14 +22,14 @@ export const ConversationMarker = React.memo(function ConversationMarker({
   const [isHovered, setIsHovered] = useState(false);
 
   const handleClick = () => {
-    console.log(`[ProgrammaticScroll] clickedMessageId: ${index}, targetIndex: ${targetIndex}`);
+    // console.log(`[ProgrammaticScroll] clickedMessageId: ${index}, targetIndex: ${targetIndex}`);
     // Lock the observer
     useChatStore.getState().setActiveMessageIndex(index);
     useChatStore.getState().setIsProgrammaticScroll(true);
 
     const el = document.getElementById(`message-${targetIndex}`);
     if (el) {
-      el.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      el.scrollIntoView({ behavior: "smooth", block: "start" });
       // Reset the lock after smooth scroll animation completes (~800ms)
       setTimeout(() => {
         useChatStore.getState().setIsProgrammaticScroll(false);
@@ -40,7 +40,7 @@ export const ConversationMarker = React.memo(function ConversationMarker({
   };
 
   return (
-    <div 
+    <div
       className="relative flex items-center justify-center w-8 h-6 cursor-pointer group"
       onMouseEnter={() => setIsHovered(true)}
       onMouseLeave={() => setIsHovered(false)}
@@ -49,19 +49,19 @@ export const ConversationMarker = React.memo(function ConversationMarker({
       tabIndex={0}
       aria-label={`Scroll to response ${responseIndex}`}
       onKeyDown={(e) => {
-        if (e.key === 'Enter' || e.key === ' ') {
+        if (e.key === "Enter" || e.key === " ") {
           e.preventDefault();
           handleClick();
         }
       }}
     >
       {/* The marker bar/dot */}
-      <div 
+      <div
         className={`w-1 rounded-full transition-all duration-300 ease-in-out ${
-          isActive 
-            ? "h-full bg-primary" 
+          isActive
+            ? "h-full bg-primary"
             : "h-2 bg-on-surface-variant/30 group-hover:bg-on-surface-variant group-hover:h-4"
-        }`} 
+        }`}
       />
 
       {/* Tooltip rendering */}

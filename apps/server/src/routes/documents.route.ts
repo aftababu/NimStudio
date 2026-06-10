@@ -25,10 +25,13 @@ router.post("/:projectId/upload", async (c) => {
     await fs.mkdir(path.join(process.cwd(), "uploads"), { recursive: true });
     await fs.writeFile(tempFilePath, Buffer.from(buffer));
 
+    // Sanitize filename to ensure it works with the @ mention regex (alphanumeric, dot, dash)
+    const sanitizedFilename = file.name.replace(/[^a-zA-Z0-9.-]/g, "_");
+
     // Process the document using our service
     const result = await DocumentsService.processAndStoreDocument(
       projectId,
-      file.name,
+      sanitizedFilename,
       tempFilePath,
       file.type
     );

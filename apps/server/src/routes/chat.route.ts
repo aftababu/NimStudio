@@ -45,7 +45,7 @@ chatRoute.post("/stream", async (c) => {
       conversationId = await saveConversation(
         "New Chat",
         reqProjectId || "default",
-        body.model || null
+        body.model || null,
       );
       isNewConversation = true;
     }
@@ -66,8 +66,12 @@ chatRoute.post("/stream", async (c) => {
     const { summary, summarizedCount } = memoryState;
     const WINDOW_SIZE = 10;
 
-    const { unsummarizedOutsideWindow, windowedMessages: rawWindowed } = 
-      await getRecentMessagesForPrompt(conversationId, WINDOW_SIZE, summarizedCount);
+    const { unsummarizedOutsideWindow, windowedMessages: rawWindowed } =
+      await getRecentMessagesForPrompt(
+        conversationId,
+        WINDOW_SIZE,
+        summarizedCount,
+      );
 
     // Sanitize messages to prevent API rejecting empty assistant messages
     const windowedMessages = rawWindowed.filter(
@@ -97,7 +101,11 @@ chatRoute.post("/stream", async (c) => {
     if (docMatches && docMatches.length > 0) {
       for (const match of docMatches) {
         const filename = match.substring(1); // remove '@'
-        const chunks = await DocumentsService.searchDocumentChunks(projectId, filename, 3); // Top 3 chunks
+        const chunks = await DocumentsService.searchDocumentChunks(
+          projectId,
+          filename,
+          3,
+        ); // Top 3 chunks
         if (chunks.length > 0) {
           documentContext += `--- DOCUMENT CONTEXT: ${filename} ---\n${chunks.join("\n\n")}\n\n`;
         }
@@ -108,22 +116,22 @@ chatRoute.post("/stream", async (c) => {
       // Prepend document context as a system message directly above the user's current message
       windowedMessages.push({
         role: "system",
-        content: `You are answering the user's query based on the following document context. Do not mention the chunks explicitly, just use the information provided.\n\n${documentContext}`
+        content: `You are answering the user's query based on the following document context. Do not mention the chunks explicitly, just use the information provided.\n\n${documentContext}`,
       } as any);
     }
 
     const assembledMessages = await assemblePrompt(windowedMessages, summary);
-    console.log("SYSTEM CONTENT");
-    console.log(assembledMessages.find((m) => m.role === "system")?.content);
+    // console.log("SYSTEM CONTENT");
+    // console.log(assembledMessages.find((m) => m.role === "system")?.content);
 
-    console.log("ASSEMBLED MESSAGES");
-    console.dir(assembledMessages, { depth: null });
+    // console.log("ASSEMBLED MESSAGES");
+    // console.dir(assembledMessages, { depth: null });
     const openaiStream = await fetchNvidiaChatStream(
       apiKey,
       assembledMessages,
       body.model,
     );
-    console.log("\n\n stream", openaiStream);
+    // console.log("\n\n stream", openaiStream);
     // Explicitly disable buffering for NGINX, proxies, and browsers
     c.header("X-Accel-Buffering", "no");
     c.header("Cache-Control", "no-cache, no-transform");
@@ -139,8 +147,8 @@ chatRoute.post("/stream", async (c) => {
       let accumulatedAssistantMessage = "";
 
       for await (const chunk of openaiStream) {
-        const delta = chunk.choices?.[0]?.delta?.content;
-        console.log("DELTA:", JSON.stringify(delta));
+        // const delta = chunk.choices?.[0]?.delta?.content;
+        // console.log("DELTA:", JSON.stringify(delta));
         const content = chunk.choices[0]?.delta?.content || "";
         accumulatedAssistantMessage += content;
 
@@ -168,7 +176,7 @@ chatRoute.post("/stream", async (c) => {
     });
   } catch (error: any) {
     console.error("Error handling chat stream:", error);
-    
+
     // If we created a new conversation but failed before streaming, delete it so we don't litter the DB
     if (isNewConversation && conversationId) {
       try {
@@ -180,12 +188,15 @@ chatRoute.post("/stream", async (c) => {
 
     const status = error.status || 500;
     const errorType = error.type || "unknown";
-    
-    return c.json({ 
-      error: error.message || "Internal Server Error",
-      status: status,
-      errorType: errorType
-    }, status);
+
+    return c.json(
+      {
+        error: error.message || "Internal Server Error",
+        status: status,
+        errorType: errorType,
+      },
+      status,
+    );
   }
 });
 
@@ -206,7 +217,7 @@ chatRoute.get("/conversations/:id/messages", async (c) => {
   try {
     const id = c.req.param("id");
     const { getConversationDetails } = await import("../services/chat.service");
-    
+
     // Check if conversation exists first
     const details = await getConversationDetails(id);
     if (!details) {
@@ -222,6 +233,7 @@ chatRoute.get("/conversations/:id/messages", async (c) => {
 
 chatRoute.get("/conversations/:id/details", async (c) => {
   try {
+    console.log("\n\n conversation id");
     const id = c.req.param("id");
     const details = await getConversationDetails(id);
     if (!details) {
@@ -258,18 +270,22 @@ chatRoute.delete("/conversations/:id", async (c) => {
 chatRoute.put("/conversations/:id/preferences", async (c) => {
   try {
     const id = c.req.param("id");
-    const { projectId, modelId } = await c.req.json<{ projectId?: string; modelId?: string }>();
-    
+    const { projectId, modelId } = await c.req.json<{
+      projectId?: string;
+      modelId?: string;
+    }>();
+
     const updateData: any = { updatedAt: new Date() };
     if (projectId !== undefined) updateData.projectId = projectId;
     if (modelId !== undefined) updateData.modelId = modelId;
 
     if (Object.keys(updateData).length > 1) {
-      await db.update(conversations)
+      await db
+        .update(conversations)
         .set(updateData)
         .where(eq(conversations.id, id));
     }
-    
+
     return c.json({ success: true });
   } catch (error: any) {
     return c.json({ error: error.message }, 500);

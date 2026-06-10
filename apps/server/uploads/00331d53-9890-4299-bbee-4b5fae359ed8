@@ -1,0 +1,1357 @@
+# EduStream — Complete Google Stitch Design Instructions
+## Production-Ready UI Design Guide
+
+---
+
+> **What this document is:** A complete, copy-paste-ready instruction set for Google Stitch to redesign EduStream from scratch. Every screen, every state, every prompt. Follow every step in order.
+
+---
+
+## PART 0 — BEFORE YOU OPEN STITCH
+
+### What is Google Stitch?
+<https://stitch.withgoogle.com> — Google Labs' AI-powered UI design tool. You type a detailed prompt → it generates a high-fidelity UI design + frontend code scaffold. Powered by Gemini 2.5 Pro (Pro mode) and Gemini 2.5 Flash (Standard mode).
+
+### Generation Limits (as of 2026)
+| Mode | Model | Monthly Limit | When to Use |
+|---|---|---|---|
+| **Standard** | Gemini 2.5 Flash | ~350 generations | Quick iterations, minor edits, variants |
+| **Pro / Experimental** | Gemini 2.5 Pro | ~200 generations | Your primary screens — use this for everything important |
+
+**Rule:** Always use **Pro mode** for the first generation of any important screen. Switch to Standard only for quick variants or small tweaks.
+
+### What Stitch Outputs
+1. A visual UI mockup (rendered on canvas)
+2. Frontend code (HTML/CSS or component scaffold)
+3. A `DESIGN.md` file (your design system rules)
+4. Figma paste (copy directly into Figma)
+
+### Export Workflow After Stitch
+```
+Stitch Design → Export DESIGN.md → Paste to Figma → Reference while implementing in Next.js/Tailwind
+```
+
+---
+
+## PART 1 — SETUP: CREATE YOUR DESIGN SYSTEM FIRST
+
+> **This is the most important step. Do this before generating any screen.** If you skip this, every screen will look different.
+
+### Step 1.1 — Open Stitch in Pro Mode
+
+1. Go to <https://stitch.withgoogle.com>
+2. Toggle **Experimental Mode** (top of the UI) → ON
+3. Set layout: **Desktop** (1440px wide)
+4. You are now using Gemini 2.5 Pro
+
+### Step 1.2 — Generate the Design System (Run This Prompt First)
+
+**Paste this entire prompt as your very first generation:**
+
+```
+Create a comprehensive design system for EduStream, a focused educational video platform.
+EduStream is NOT YouTube. It is a distraction-free, curated learning platform used by
+students, universities, and parents managing children's learning.
+
+PRODUCT CONTEXT:
+- Users save video links (YouTube, Vimeo) into curated collections
+- Videos play inside EduStream, not on YouTube (no recommendations, no ads)
+- Key user types: individual learners, org/university admins, parents (kids mode)
+- Competitors in feel: Linear.app, Notion, Coursera — NOT YouTube, Netflix
+
+DESIGN SYSTEM SPECIFICATION:
+
+COLOR PALETTE:
+- Sidebar background: #0F172A (slate-950, very dark navy)
+- Main background: #F8FAFC (slate-50, off-white — not pure white)
+- Card background: #FFFFFF with border: 1px solid #E2E8F0
+- Primary accent: #6366F1 (indigo-500) — used for active states, CTAs, links
+- Primary accent hover: #4F46E5 (indigo-600)
+- Primary accent light (for icon backgrounds): #EEF2FF (indigo-50)
+- Success green: #22C55E
+- Warning amber: #F59E0B
+- Danger red: #EF4444
+- Text primary: #1E293B (slate-800)
+- Text secondary: #64748B (slate-500)
+- Text muted: #94A3B8 (slate-400)
+- Sidebar text (default): #94A3B8
+- Sidebar text (active): #FFFFFF
+- Sidebar active bg: rgba(99, 102, 241, 0.15) with left border 3px solid #6366F1
+- Divider: #1E293B (very subtle in sidebar), #E2E8F0 in main area
+
+TYPOGRAPHY:
+- Font family: Inter (all weights)
+- Display heading: 28px, weight 700, color #1E293B
+- Page heading: 22px, weight 600, color #1E293B
+- Section heading: 16px, weight 600, color #1E293B
+- Body text: 14px, weight 400, color #1E293B
+- Secondary text: 13px, weight 400, color #64748B
+- Caption/label: 12px, weight 500, color #94A3B8 (uppercase for labels)
+- Code/numbers: 'JetBrains Mono' or monospace
+
+SPACING SYSTEM:
+- Base unit: 4px
+- Card padding: 20px
+- Section gap: 32px
+- Sidebar item padding: 10px 16px
+- Content max-width: 1200px centered in main area
+
+COMPONENT SPECS:
+
+Sidebar (240px wide, full height, fixed):
+- Background: #0F172A
+- Top: 24px left padding, "EduStream" logo text in white, weight 700, 18px
+- Nav items: icon (20px, colored per item) + label (14px) + optional badge
+- Item spacing: 4px between items
+- Active item: indigo pill style — left border 3px solid #6366F1 + bg rgba(99,102,241,0.12) + white text
+- Hover: rgba(255,255,255,0.06) background
+- Bottom section: user avatar + name + settings
+
+Video Card (standard):
+- Border-radius: 12px
+- Thumbnail: 16:9 ratio, border-radius top 12px, with duration chip (bottom-right)
+- Duration chip: dark semi-transparent bg (#000000cc), 11px white monospace text, rounded-full
+- Title: 14px, weight 600, 2-line clamp, color #1E293B
+- Channel name: 12px, color #64748B
+- Progress bar: 3px height, #6366F1 color, gray track, shown below thumbnail if in progress
+- Hover: translateY(-2px) + shadow elevation
+
+Collection Card:
+- Thumbnail grid (2x2 collage of video thumbnails, or single image)
+- Collection title, video count badge, visibility badge (Public/Private/Unlisted)
+- "View Collection" hover overlay
+
+Stat Card:
+- White background, border, border-radius 12px
+- Icon in colored circle (indigo-50 bg, indigo icon)
+- Large number (32px, weight 700)
+- Label below (13px, #64748B)
+- Optional: small trend indicator (+12% green arrow)
+
+Button variants:
+- Primary: bg #6366F1, text white, border-radius 8px, height 36px, hover bg #4F46E5
+- Secondary: bg white, border 1px solid #E2E8F0, text #1E293B, hover bg #F8FAFC
+- Destructive: bg #EF4444, text white
+- Ghost: transparent, text #6366F1, hover bg indigo-50
+
+Input/Search bar:
+- Height: 40px, border: 1px solid #E2E8F0, border-radius 8px
+- Focus: border-color #6366F1, ring: 3px rgba(99,102,241,0.15)
+- Left icon slot, right clear button
+
+Badge variants:
+- Public: green bg (#DCFCE7), green text (#16A34A)
+- Private: gray bg (#F1F5F9), gray text (#475569)
+- Unlisted: amber bg (#FEF9C3), amber text (#A16207)
+- Premium: indigo bg (#EEF2FF), indigo text (#4F46E5)
+- Free: gray bg (#F1F5F9), gray text (#64748B)
+
+LAYOUT STRUCTURE:
+Fixed left sidebar (240px) + scrollable main content area (flex-1).
+Main content: 32px top/bottom padding, 40px left/right padding, max-width 1200px.
+
+Show me the complete design system as a design reference sheet with all components
+displayed together: color swatches, typography scale, all button variants, card examples,
+badge examples, sidebar anatomy, and the overall layout grid. Use real content (not lorem ipsum).
+```
+
+**After generating:** Click "Export DESIGN.md" and save this file. This is your brand bible — you will paste it into every future Stitch session.
+
+---
+
+## PART 2 — THE PROMPT FRAMEWORK (Read Before Every Prompt)
+
+Use the **Zoom-Out-Zoom-In** framework for every screen prompt:
+
+```
+[ZOOM OUT — Product & User Context]
+Who is using this screen, what is their goal, what emotional state are they in?
+
+[DESIGN SYSTEM]
+Paste your DESIGN.md content here (or reference the colors/specs above)
+
+[ZOOM IN — This Specific Screen]
+Exact screen name, exact components needed, exact data to show, exact states
+
+[CONSTRAINTS]
+What NOT to include. What this screen must NOT look like.
+```
+
+---
+
+## PART 3 — SCREEN-BY-SCREEN PROMPTS
+
+### ⚡ IMPORTANT BEFORE EACH PROMPT:
+1. Start a **new canvas** per screen (don't stack screens on one canvas)
+2. Use **Pro mode** for every first generation
+3. After first generation, use "Add variant" (not new generation) for tweaks
+4. Generate **2 variants** for complex screens, pick the better one
+5. After each screen: click **"Paste to Figma"** to build your Figma file in parallel
+
+---
+
+### SCREEN 1 — Dashboard (Most Important Screen)
+
+**Mode:** Pro | **Layout:** Desktop 1440px
+
+```
+ZOOM OUT:
+EduStream is a focused educational video platform. The Dashboard is the home screen for
+authenticated users. The user has watched some videos before and has a few collections.
+Their goal when they open the Dashboard: quickly see what to continue watching, see their
+learning progress, and discover new recommendations. They are in a "focused study" mindset —
+not browsing for entertainment.
+
+DESIGN SYSTEM:
+Sidebar: #0F172A background, 240px wide, fixed. 
+Main area: #F8FAFC background.
+Primary accent: #6366F1 (indigo).
+Cards: white bg, 1px solid #E2E8F0 border, 12px radius.
+Font: Inter. Primary text: #1E293B. Secondary: #64748B.
+
+ZOOM IN — Dashboard Screen:
+
+SIDEBAR (left, 240px, full height, dark #0F172A):
+- Top: "EduStream" text logo in white, weight 700, with a small book/play icon
+- Navigation items with colored icons:
+  * 🟦 Dashboard (active — indigo left border + light indigo bg + white text)
+  * 🟣 Explore (purple icon)
+  * 🟠 Collections (orange icon)  
+  * 🔴 History (red icon)
+  * 🟢 Analytics (green icon)
+  * 🔵 Billing (blue card icon)
+- Bottom: User avatar (small circle, initials "A"), "abu" name, "Settings" gear icon
+- Subtle separator line between nav and bottom section
+
+MAIN CONTENT AREA (right of sidebar, #F8FAFC bg):
+
+TOP BAR (white, 56px tall, subtle bottom border):
+- Left: Page title "Dashboard" in 20px bold
+- Center: Search bar (400px wide), placeholder "Search videos, collections...", 
+  search icon left, keyboard shortcut hint "⌘K" on right
+- Right: Notification bell icon (with badge showing 2), user avatar
+
+CONTENT (padding 32px, max-width 1200px):
+
+SECTION 1 — Personalized Greeting:
+- "Good morning, Abu 👋" — 24px bold
+- Subtitle: "You have 2 videos left in 'Physics Fundamentals'" — 14px gray
+- Right side: "Learning streak: 🔥 7 days" — pill badge with flame, amber color
+
+SECTION 2 — Stats Row (4 cards, equal width):
+Card 1: Play icon (indigo bg circle), "Total Watch Time", "14h 32m" large number, 
+        "+2h this week" small green trend text
+Card 2: Bookmark icon (purple bg circle), "Saved Videos", "47", "+5 this week"
+Card 3: Collection icon (orange bg circle), "Collections", "8", "3 active"
+Card 4: Flame icon (amber bg circle), "Current Streak", "7 days", "Best: 12 days"
+
+SECTION 3 — Continue Watching (horizontal scroll row):
+Section title "Continue Watching" (bold 16px) + "See all" link (right, indigo)
+3 video cards in a row showing:
+- Video card with 16:9 thumbnail (use realistic educational thumbnails — physics, math, CS)
+- Blue progress bar showing 45%, 78%, 20% completion respectively
+- Video title (2 lines max), channel name below, duration chip on thumbnail
+- "Resume" button appears on hover
+
+SECTION 4 — My Collections (grid, 3 columns):
+Section title "My Collections" + "View all" link
+3 collection cards:
+- "Physics Fundamentals" — 4-thumbnail mosaic, "12 videos", Public badge (green)
+- "Machine Learning" — single thumbnail, "8 videos", Private badge (gray)
+- "History Notes" — 4-thumbnail mosaic, "23 videos", Unlisted badge (amber)
+- Each card: hover overlay shows "View Collection" button
+- "+ New Collection" card with dashed border, plus icon, "Create Collection" text
+
+SECTION 5 — Recommended For You (horizontal scroll):
+Section title "Recommended For You" (indigo sparkle icon) + "Refresh" link
+4 video cards in a row (NOT watched yet):
+- Video thumbnail, title, channel, duration
+- Small "Why recommended" tooltip hint icon
+
+CONSTRAINTS:
+- NO YouTube-style red color anywhere
+- NO infinite scroll feel — this is organized, calm, educational
+- NO notifications or social feed elements
+- NO autoplay indicators
+- Sidebar must be dark, main content must be light — clear contrast
+- Stats must have icons — numbers alone look empty
+- Every section must have visible section headers with a "see all" action
+```
+
+---
+
+### SCREEN 2 — Collections List Page
+
+**Mode:** Pro | **Layout:** Desktop 1440px
+
+```
+ZOOM OUT:
+User is on the Collections page. They want to see all their collections, create a new one,
+or find a specific collection to open. Think of this like a personal library page —
+organized, scannable, purposeful.
+
+DESIGN SYSTEM: [same as above — sidebar dark, main light, indigo accent]
+
+ZOOM IN — Collections Page:
+
+SIDEBAR: Same as Dashboard, "Collections" item active (orange icon, indigo active state)
+
+MAIN CONTENT:
+
+PAGE HEADER (white bar, slightly elevated, sticky):
+- Title: "My Collections" bold 22px
+- Subtitle: "8 collections · 47 saved videos" in gray
+- Right side: two buttons: "Import Collection" (secondary button, with download icon) + 
+  "New Collection" (primary indigo button, with + icon)
+
+FILTER/SORT BAR (below header, padding 20px):
+- Left: Tab pills — "All" (active, indigo) | "Public" | "Private" | "Unlisted"
+- Center: Search input "Search collections..." 280px wide
+- Right: Sort dropdown "Sort: Recently updated" + Grid/List view toggle icons
+
+COLLECTION GRID (3 columns, 24px gap):
+
+Collection Card design (12px radius, white bg, border, hover shadow):
+TOP: Thumbnail section (160px tall, border-radius top 12px):
+  - If has multiple videos: 2x2 grid of video thumbnails (4 quadrants)
+  - If 0-1 videos: single color gradient bg with collection initial letter
+  - Top-right corner: Visibility badge pill (Public=green, Private=gray, Unlisted=amber)
+  
+BOTTOM: Card body (padding 16px):
+  - Collection title: 15px bold, 1-line clamp, dark color
+  - Description: 13px gray, 2-line clamp
+  - Tags row: small pills (indigo outline) showing 1-2 tags + "+3 more" overflow
+  - Footer row: "12 videos" with video icon (left) + "Updated 2 days ago" (right, gray)
+  - Hover state: "View Collection →" button fades in at bottom
+
+Show these 8 collections in the grid:
+1. "Physics Fundamentals" — 12 videos, Public, tags: science, physics
+2. "Machine Learning Path" — 8 videos, Private, tags: AI, programming  
+3. "World History Notes" — 23 videos, Unlisted, tags: history
+4. "Calculus for Beginners" — 5 videos, Public, tags: math
+5. "Python Programming" — 17 videos, Private, tags: coding
+6. "Biology Essentials" — 9 videos, Public
+7. "Literature Classics" — 6 videos, Private
+8. "+ New Collection" — dashed border card, centered + icon, "Create a new collection" text, 
+   indigo hover state with solid border
+
+EMPTY STATE (show as a separate smaller mockup in bottom corner):
+- Large illustration placeholder (books/collection icon in light gray)
+- "No collections yet"
+- "Start organizing your learning journey" subtext
+- "Create your first collection" indigo CTA button
+
+CONSTRAINTS:
+- Cards must be consistent height (no masonry — grid is cleaner)
+- Tags must be truncated if more than 2 visible
+- Action buttons (Edit, Delete) should only appear on hover via a "..." menu icon
+```
+
+---
+
+### SCREEN 3 — Collection Detail Page
+
+**Mode:** Pro | **Layout:** Desktop 1440px
+
+```
+ZOOM OUT:
+User clicked on a collection. They want to see all videos in it, maybe add more,
+reorder them, or share the collection. This is like a playlist page — they may start
+watching from here, or curate the collection further.
+
+ZOOM IN — Collection Detail: "Physics Fundamentals"
+
+SIDEBAR: Same dark sidebar, Collections active
+
+MAIN CONTENT:
+
+COLLECTION HERO SECTION (white card, full width, padding 32px):
+- Left side: Collection thumbnail (300px × 169px, 16:9, rounded 12px) 
+  showing a 2x2 mosaic of 4 video thumbnails from the collection
+- Right side (flex):
+  * Title: "Physics Fundamentals" — 26px bold
+  * Description: "A curated collection of foundational physics lectures..." — 14px gray, 3-line
+  * Meta row: "12 videos" icon-text · "4h 30m total" · "Public" green badge · "Created 3 months ago"
+  * Tags: pill badges — "physics", "science", "university"
+  * Action buttons row: 
+    "Add Video" (indigo primary, + icon) | 
+    "Share" (secondary, share icon) |
+    "Edit" (secondary, pencil icon) |
+    "..." more menu button
+  * Progress bar: "You've watched 7 of 12 videos" — 58% indigo bar, gray track, 
+    completion text below
+
+TOOLBAR (white, sticky, shows when scrolling past hero):
+- Left: "12 videos" count
+- Center: "Filter by..." dropdown | Sort: "Manual order ↕" dropdown
+- Right: "Play All" button (indigo with play icon) | Grid/List toggle
+
+VIDEO LIST (below hero, 2-column grid for video cards):
+
+Video Card (horizontal style for list view, vertical for grid view — show grid view):
+- Thumbnail: 16:9, with duration chip (bottom right)
+- Number badge: "01", "02" etc in top-left corner (for ordering)
+- Title: 14px bold, 2-line clamp
+- Channel: 12px gray
+- Duration: shown in chip
+- Your progress: thin progress bar below thumbnail (if any)
+- Actions on hover: ⋮ menu (Move to..., Remove from collection, Copy link)
+- Drag handle icon on far left (for reorder)
+
+Show these 12 videos:
+01. "Newton's Laws of Motion" — MIT OpenCourseWare — 24:15 — 100% complete (green checkmark)
+02. "Understanding Gravity" — Khan Academy — 18:30 — 100% complete
+03. "Wave Motion Explained" — 3Blue1Brown — 32:00 — 75% (progress bar)
+04. "Quantum Physics Intro" — PBS Space Time — 28:45 — 0% (not started)
+05-12: Similar educational video titles, alternating between watched/unwatched
+
+INVITE SECTION (bottom of page if org collection):
+"Share with your class" — "Copy share link" button + QR code option
+
+CONSTRAINTS:
+- The hero section must feel premium — like a Coursera course page
+- Videos should clearly show watch progress 
+- Completed videos should have a subtle green checkmark indicator
+- "Add Video" must be prominently accessible — it's the #1 action
+```
+
+---
+
+### SCREEN 4 — Watch Page (Video Player)
+
+**Mode:** Pro | **Layout:** Desktop 1440px
+
+```
+ZOOM OUT:
+This is the most critical screen. The user is actively learning. The design MUST eliminate
+distractions. This is the opposite of YouTube — no related videos aggressively pushed,
+no autoplay countdown timers, no comments. Just focused learning.
+
+ZOOM IN — Watch Page
+
+SIDEBAR: Collapsed to icon-only (48px wide) when on watch page to maximize video space.
+Icons only, no labels. Indigo active indicator. Expand button at top.
+
+MAIN CONTENT (no padding — video fills the area):
+
+LEFT SECTION (flex-grow, main content):
+
+VIDEO PLAYER AREA (dark background #0F172A, 16:9 ratio, full available width):
+- The video player UI — dark player chrome
+- Bottom controls: progress bar (indigo), play/pause, volume, current time / total time,
+  speed selector "1x", fullscreen button, closed captions toggle
+- Above player: Breadcrumb — "Physics Fundamentals › Wave Motion Explained" in white/gray
+  small text (collapses the dark header feel)
+- Player shadow: subtle elevation
+
+BELOW PLAYER (white bg, padding 24px):
+- Video title: "Wave Motion Explained" — 20px bold
+- Meta row: "3Blue1Brown · 32:14 · Added to Physics Fundamentals · 847K views"
+- Description (collapsible, show 3 lines by default, "Show more" link)
+- Tags: small pill badges below description
+- Action row: 
+  "Save to Collection" (bookmark icon, secondary button) |
+  "Mark as Complete" (checkmark icon, green button) |
+  "Share" (secondary) |
+  Progress: "Your progress: 75% · Resume at 24:11" (with resume button)
+
+TRANSCRIPT PANEL (below description, collapsible accordion):
+- Header: "Transcript" + toggle arrow + "Search transcript" input (right)
+- Transcript lines: timestamp (indigo, clickable to seek) + text
+- Current line highlighted with light indigo bg
+- Scrollable, 200px max height, virtualized
+
+RIGHT SIDEBAR PANEL (320px wide, fixed height, scrollable):
+Title: "Up Next in Physics Fundamentals"
+
+NEXT VIDEO CARD (prominent, at top):
+- Thumbnail (16:9), with "NEXT" badge
+- Title: "Quantum Physics Intro"
+- Duration: 28:45
+- "Play Next" button (indigo)
+- "Skip" link (gray)
+
+REMAINING VIDEOS LIST (compact cards below):
+Videos 5-12 from the collection in compact list format:
+- Small thumbnail (60px wide) + title + duration + progress/complete indicator
+- Currently playing: highlighted with left indigo border
+- Completed: faded with checkmark
+
+Below list: "Recommended" section with 2 videos not in this collection
+(indigo sparkle icon header, "You might also like")
+
+CONSTRAINTS:
+- NO YouTube sidebar with unrelated videos
+- The right panel shows ONLY this collection's remaining videos + 2 recommendations
+- Player controls must be custom-styled (not default browser controls)
+- Player area must be large — video is the hero of this page
+- Transcript panel is optional/collapsible — don't make it visible by default
+- Dark player section, light info section below — clear visual hierarchy
+```
+
+---
+
+### SCREEN 5 — Search Page
+
+**Mode:** Pro | **Layout:** Desktop 1440px
+
+```
+ZOOM OUT:
+User is actively searching for content. They may be looking for a specific video to save,
+or exploring a topic. They need fast, filterable results with clear information density.
+
+ZOOM IN — Search Page: Results for "quantum physics"
+
+SIDEBAR: Same dark sidebar, no active item (search is in topbar)
+
+MAIN CONTENT:
+
+SEARCH HEADER (white, sticky, 72px tall with prominent search):
+- Full-width search bar (max 800px, centered): 
+  "quantum physics" text in it, search icon left, X clear button right, keyboard shortcut hint
+- Below search bar: result count "Showing 47 results for 'quantum physics'"
+
+FILTERS ROW (below header, light bg, padding 16px 40px):
+- Filter chips (horizontal scroll on mobile):
+  "Type:" [Videos (active, indigo)] [Collections] [All]
+  "Category:" [All] [Science] [Math] [History] [CS] [+more]
+  "Duration:" [Any] [< 10min] [10-30min] [> 30min]
+  "Source:" [YouTube] [Vimeo] [All]
+- Right: Sort dropdown "Sort: Most Relevant ↓"
+
+RESULTS LAYOUT (40px padding, max-width 1200px):
+
+TWO COLUMN LAYOUT:
+LEFT MAIN (flex-grow): Video results in list format (more info density)
+RIGHT SIDEBAR (280px): Filters panel (static on desktop)
+
+VIDEO RESULT CARD (list style, full width of left column):
+- Large thumbnail (240px × 135px, left side, 16:9, rounded 8px)
+- Right of thumbnail:
+  * Video title: 16px bold, 2-line clamp, with matched search term highlighted in indigo
+  * Channel + source: "PBS Space Time · YouTube · 847K views · 2 years ago"
+  * Description snippet: 2 lines, highlighted search matches
+  * Duration chip, Tags: matching tags in indigo pill, "science" "quantum" "physics"
+  * Action row: "Save to Collection ▾" (dropdown button) | "Watch Now" (indigo)
+  * Already saved indicator: "✓ Saved in Physics Fundamentals" in green (if already saved)
+
+Show 6 video results for "quantum physics" with realistic titles, channels, durations.
+
+RIGHT FILTER PANEL (280px, white, rounded card, sticky):
+"Refine Results" heading
+- Category checkboxes with counts: Science (34) ✓, Physics (28) ✓, Math (8)
+- Duration range slider: 0 — 60+ minutes
+- Source checkboxes: YouTube (41) ✓, Vimeo (6)
+- Language: English (44), Spanish (3)
+- "Clear filters" link at bottom
+
+NO RESULTS STATE (small mockup in corner):
+- Illustration placeholder
+- "No results for 'xxxxx'"
+- Suggestions: "Try: physics basics, quantum mechanics, particle physics"
+- "Add this video manually" link (for paste URL)
+
+CONSTRAINTS:
+- Search matches MUST be visually highlighted in results
+- "Save to Collection" must have a dropdown (not just save to default)
+- Results must show whether user has already saved/watched the video
+- Filters must show item counts next to each option
+```
+
+---
+
+### SCREEN 6 — Analytics Page
+
+**Mode:** Pro | **Layout:** Desktop 1440px
+
+```
+ZOOM OUT:
+User is reviewing their learning progress. They want to feel proud of what they've
+accomplished and motivated to continue. This page should feel like a personal achievement
+dashboard — encouraging, not clinical.
+
+ZOOM IN — Analytics Page
+
+SIDEBAR: Analytics (green icon) active
+
+MAIN CONTENT:
+
+PAGE HEADER:
+- Title: "Learning Analytics" 
+- Subtitle: "Your progress this month"
+- Right: Date range picker "Last 30 days ↓" | "Export CSV" secondary button
+
+ROW 1 — KEY STATS (4 stat cards, equal width):
+Card 1: Clock icon (indigo bg), "Total Watch Time", "14h 32m", "+2h vs last month" green
+Card 2: Flame icon (amber bg), "Learning Streak", "7 days 🔥", "Best: 12 days" gray
+Card 3: Check circle icon (green bg), "Videos Completed", "23", "8 this week" green  
+Card 4: Collection icon (blue bg), "Collections Active", "5", "out of 8 total" gray
+
+ROW 2 — CHARTS (two columns):
+LEFT (60% width) — Watch Time Chart:
+- Bar chart, 30 days, X-axis: dates, Y-axis: hours
+- Bars in indigo (#6366F1) with lighter indigo for weekends
+- Hover tooltip showing exact time per day
+- Title: "Daily Watch Time" with chart icon
+- Average line: dotted gray line showing "Daily avg: 29 min"
+
+RIGHT (40% width) — Category Breakdown:
+- Donut chart with legend
+- Physics: 38% (indigo)
+- Computer Science: 28% (purple)
+- Mathematics: 18% (blue)
+- History: 10% (amber)
+- Other: 6% (gray)
+- Center of donut: "47 videos" total
+- Legend below with color dots + category name + percentage
+
+ROW 3 — TWO COLUMN SECTION:
+LEFT — Weekly Progress Table:
+Heading: "Week-by-Week"
+Table with columns: Week | Videos Watched | Watch Time | Streak
+Data for last 5 weeks, last row highlighted (current week)
+Clean table, alternating row colors, no heavy borders
+
+RIGHT — Top Categories:
+Heading: "Your Learning Focus"
+List of categories with:
+- Category icon (colored circle with initial)
+- Category name
+- Video count + watch time
+- Progress bar (width = % of total watch time)
+Top 5: Physics, CS, Math, History, Biology
+
+ROW 4 — STREAK CALENDAR (full width):
+GitHub contribution-style calendar heatmap for last 3 months
+Each day = a square, color intensity = watch time (light indigo to dark indigo)
+Empty days = light gray
+Today = indigo border
+Legend: "Less" → "More" with 5 color swatches
+Heading: "Your Learning Heatmap"
+
+ROW 5 — RECENT COMPLETIONS:
+Heading: "Recently Completed" + "See all" link
+List of 5 completed videos (compact):
+- Small thumbnail, title, collection name, completion date, duration watched
+Each row: checkmark icon (green), video info, "Watch again" ghost button on hover
+
+CONSTRAINTS:
+- Charts must use indigo as primary chart color (brand consistency)
+- MUST include the streak heatmap (this is a key motivational feature)
+- Numbers should be large and easy to read
+- Tone should be encouraging, not clinical — achievement-focused
+- Premium badge: "🔒 Advanced Analytics — Upgrade to see per-video heatmaps" 
+  shown as a locked card overlay for free users on the last row
+```
+
+---
+
+### SCREEN 7 — History Page
+
+**Mode:** Standard | **Layout:** Desktop 1440px
+
+```
+ZOOM OUT:
+User reviewing their watch history. Needs to find previously watched videos,
+understand what they've been studying, and potentially resume or re-watch.
+
+ZOOM IN — History Page
+
+SIDEBAR: History (red icon) active
+
+MAIN CONTENT:
+
+PAGE HEADER:
+- Title: "Watch History" 
+- Right: "Clear History" danger/ghost button | "Filter" secondary button
+
+FILTER TABS (horizontal):
+- [All] [Today] [This Week] [This Month] — tab pills, indigo active
+
+HISTORY LIST (grouped by date):
+
+DATE GROUP HEADER: "Today — June 1, 2026" (gray, 12px uppercase label, with horizontal rule)
+
+HISTORY ITEM CARD (list item, white bg, border, 12px radius, hover shadow):
+- Left: Thumbnail (120px × 68px, rounded 8px) with duration chip
+- Center:
+  * Video title (15px bold)
+  * Collection: "In Physics Fundamentals" (small indigo link)
+  * Channel name + source icon (YouTube red Y or Vimeo blue V logo)
+  * Progress: "Watched 24:11 / 32:14 (75%)" with small indigo progress pill
+  * Time watched: "Watched at 2:34 PM" gray small text
+- Right:
+  * "Resume" indigo button (if incomplete)
+  * "Watch Again" secondary button (if complete, shows checkmark icon)
+  * ⋮ kebab menu: "Remove from history" | "Save to collection"
+
+Show 8-10 history items grouped under Today (2), Yesterday (3), Last Week (5).
+
+DATE GROUP: "Yesterday — May 31, 2026"
+DATE GROUP: "Last Week"
+
+EMPTY STATE (show as inset small mockup):
+- History icon (large, light gray)
+- "Your history is empty"
+- "Videos you watch will appear here"
+
+CONSTRAINTS:
+- Group items by date with clear date headers
+- Progress bar per item is crucial — key differentiator from YouTube
+- Keep actions (Resume / Watch Again) always visible, not hidden in hover
+```
+
+---
+
+### SCREEN 8 — Settings Page
+
+**Mode:** Standard | **Layout:** Desktop 1440px
+
+```
+ZOOM OUT:
+User managing their account. Needs to feel in control. Clean, organized settings
+layout — not a dumping ground.
+
+ZOOM IN — Settings Page
+
+SIDEBAR: Settings at bottom, active
+
+SETTINGS LAYOUT (two-column: nav left 220px + content right):
+
+SETTINGS NAV (left, white card, sticky):
+Sections:
+- Profile (user icon) — active
+- Notifications (bell icon)
+- Playback (play icon)
+- Privacy (shield icon)
+- Kids & Safety (child icon)
+- Billing (credit card icon) — "Premium" badge
+- Organization (building icon)
+- Danger Zone (alert icon, red text)
+
+SETTINGS CONTENT (right, white card):
+
+PROFILE SECTION (shown by default):
+- Heading: "Profile Settings"
+- Avatar section: Large circle avatar (80px), "Change Photo" button below
+- Form fields (clean, well-spaced):
+  Display Name: text input, current value "Abu"
+  Username: text input with @prefix, "@abu"
+  Email: text input, disabled (managed by Clerk), "Managed by authentication provider" gray hint
+  Bio: textarea, 120px tall, character count "0/200"
+  Language: select dropdown, "English"
+- "Save Changes" indigo primary button | "Cancel" ghost button — bottom right
+
+BILLING SECTION (separate card, shown as secondary on this page):
+Small preview card showing:
+- Current plan badge: "FREE PLAN" gray pill
+- "47 / 1,000 videos used" — progress bar (4.7% filled, indigo)
+- "Upgrade to Premium" — indigo CTA card with star icon
+  "Unlimited videos · Advanced analytics · AI recommendations"
+  "$9.99/month" large, "Get Premium" button
+
+CONSTRAINTS:
+- Two-column settings layout (not one long scrolling page)
+- Billing teaser visible on profile page to encourage upgrades
+- Form fields must have validation state examples (one field with error state)
+```
+
+---
+
+### SCREEN 9 — Billing Page
+
+**Mode:** Pro | **Layout:** Desktop 1440px
+
+```
+ZOOM OUT:
+User considering upgrading from Free to Premium. This page needs to convert them.
+Must clearly show value, pricing, and current usage. Trust signals matter.
+
+ZOOM IN — Billing / Pricing Page
+
+SIDEBAR: Billing (blue icon) active
+
+MAIN CONTENT (max-width 900px, centered):
+
+CURRENT PLAN CARD (top, full width, white, 12px radius, indigo left border):
+- Left: Plan info
+  "Your Current Plan" label (gray)
+  "Free Plan" heading (22px bold)
+  Features: ✓ Up to 1,000 videos ✓ Basic collections ✓ Watch history ✓ Kids mode
+- Right: Usage meter
+  "Video Storage: 47 / 1,000 videos" 
+  Large progress bar (4.7%, indigo fill)
+  "Collections: 8 / 50"
+  "Share Links: 2 / 5"
+- No payment method on file
+
+PRICING COMPARISON (3 column cards):
+
+FREE CARD (left, gray border, current plan badge):
+- "Free" heading, "$0 / month"
+- Feature list with ✓ and ✗ marks:
+  ✓ 1,000 videos
+  ✓ 50 collections  
+  ✓ Basic analytics
+  ✓ Watch history
+  ✓ Kids mode
+  ✗ Unlimited videos (grayed out)
+  ✗ Advanced analytics (grayed out)
+  ✗ AI recommendations (grayed out)
+  ✗ Org collaboration (grayed out)
+- "Current Plan" button (disabled, gray)
+
+PREMIUM CARD (center, indigo border + gradient top, "Most Popular" badge, elevated shadow):
+- "Premium" heading in indigo, "⭐ Most Popular" badge
+- "$9.99" large + "/month" small, "$99/year (save 17%)" toggle
+- Toggle: Monthly / Yearly selector
+- Full feature list:
+  ✓ Unlimited videos
+  ✓ Unlimited collections
+  ✓ Advanced analytics with heatmaps
+  ✓ AI-powered recommendations
+  ✓ Priority support
+  ✓ Kids mode (enhanced)
+  ✓ Org collaboration (up to 5 members)
+  ✓ Export analytics CSV
+- "Upgrade to Premium" large indigo button
+- "30-day money-back guarantee" small gray text below
+
+ENTERPRISE CARD (right, dark #0F172A bg, white text):
+- "Enterprise" heading, "Custom pricing"
+- For universities and schools
+- Feature list (all premium + SAML SSO, custom branding, LMS embed, dedicated support)
+- "Contact Sales" white button
+
+BELOW CARDS:
+- Trust signals row: "🔒 Secure payments by Stripe" | "⭐ 4.8/5 from 2,400 reviews" | 
+  "🏫 Trusted by 50+ universities"
+- FAQ accordion: 3 questions about billing, cancellation, data on downgrade
+
+CONSTRAINTS:
+- Premium card must visually dominate (larger, elevated, indigo accent)
+- Feature comparison must use ✓ / ✗ icons clearly
+- Pricing is NEVER hidden — show it prominently
+- "30-day money-back guarantee" must be visible on the CTA
+```
+
+---
+
+### SCREEN 10 — Add Video Modal
+
+**Mode:** Standard | **Layout:** Desktop 1440px (modal overlay)
+
+```
+ZOOM IN — "Add Video" Modal
+
+Show the full page (Dashboard or Collection detail blurred in bg) with a modal overlay:
+
+MODAL (560px wide, white, 16px radius, shadow elevation):
+
+MODAL HEADER:
+- "Add Video to Physics Fundamentals" title (18px bold)
+- X close button (top right)
+
+STEP 1 — URL Input (main step):
+Large label: "Paste a video URL"
+Subtext: "Supports YouTube, Vimeo, Loom, Dailymotion"
+URL input (full width, 48px tall): placeholder "https://youtube.com/watch?v=..."
+Below input: Provider logos: YouTube (red), Vimeo (blue), Loom (purple) — small, gray
+"Fetch Video Info →" indigo button (right-aligned)
+
+STEP 2 — Video Preview (after URL entered, show this state in same modal):
+Video preview card (gray bg, 16px radius):
+- Thumbnail (240px × 135px, left)
+- Right of thumbnail:
+  * Title: "Wave Motion Explained" (detected, editable)
+  * Channel: "3Blue1Brown"
+  * Duration: "32:14"
+  * Source: YouTube logo
+- "This video looks good!" green check message
+
+Collection selector: "Add to collection:" dropdown showing "Physics Fundamentals" (current)
++ "Create new collection" option at bottom of dropdown
+
+Note field: "Add a note (optional)" small textarea — "Watch after quantum basics"
+
+Footer buttons: "Cancel" ghost | "Add to Collection" indigo primary button
+
+LOADING STATE (show as small inset):
+- Spinning indigo ring
+- "Fetching video information..."
+
+ERROR STATE (show as inset):
+- Red border on input
+- "Could not find video at this URL. Check the link and try again."
+```
+
+---
+
+### SCREEN 11 — Kids Mode Dashboard
+
+**Mode:** Pro | **Layout:** Desktop 1440px
+
+```
+ZOOM OUT:
+A child (age 8-14) is using Kids Mode. The parent has whitelisted specific collections.
+The design MUST be completely different from the adult UI: bigger, brighter, friendlier,
+simpler. Think: between YouTube Kids and Duolingo energy. Absolutely no complexity.
+
+ZOOM IN — Kids Mode Dashboard
+
+FULL PAGE REDESIGN (not the standard sidebar layout):
+
+BACKGROUND: Soft gradient from #EFF6FF (light blue) to #F0FDF4 (light green)
+No dark sidebar. Full-width colorful layout.
+
+TOP BAR (white, rounded bottom corners, shadow):
+- Left: Colorful "EduStream Kids" logo with star/book emoji
+- Center: "Hi Abu! 👋" in large friendly text (Nunito font, 22px)
+- Right: Timer display "⏱ 45 min left today" in amber pill badge
+- Far right: "Exit Kids Mode 🔒" gray button (requires parent PIN)
+
+HERO WELCOME AREA (full width, colorful):
+- Large friendly illustration placeholder (child studying with books/stars) — right side
+- Left: "What do you want to learn today?" heading (26px, rounded font, dark blue)
+- Category buttons (large, colorful, rounded-xl, icon + label):
+  🔬 Science (blue card, hover bounce animation note)
+  📐 Math (green card)
+  🌍 History (amber card)
+  🎨 Art (pink card)
+  💻 Technology (purple card)
+  📖 Reading (orange card)
+
+CONTINUE WATCHING SECTION:
+Heading: "Continue Watching 🎬" (large, friendly)
+3 LARGE video cards (bigger than adult version):
+- Thumbnail (larger, 200px × 112px)
+- Large progress bar in bright colors (green fill)
+- Title (16px, rounded font, bold)
+- Simple progress text: "75% done!" or "Just started!" instead of seconds
+- Large "Resume ▶" button (rounded, colorful — matches category color)
+
+MY COLLECTIONS SECTION:
+Heading: "My Collections 📚"
+Colorful collection tiles (larger icons, rounded, bright backgrounds):
+- Each tile: big emoji icon, collection name, video count
+- "Physics Fun ⚗️", "Number Adventures ➗", "World Explorer 🌍"
+
+TIMER WARNING STATE (show as small inset at bottom):
+When 10 min remaining: amber border appears around top bar
+"⏰ 10 minutes left! Finish up soon" amber banner
+When 0 min: Full screen "Time's Up! 🌟" overlay — "You watched for 45 minutes today"
+"Ask a parent to give you more time" — with parent PIN entry form
+
+CONSTRAINTS:
+- NO dark sidebar — kids mode has completely different layout
+- NO statistics or complex numbers
+- Font must be rounder/friendlier (Nunito or similar) — NOT Inter
+- Colors must be BRIGHT and WARM — blues, greens, ambers, not slate/gray
+- All interactive elements must be LARGER than adult UI
+- No small text anywhere — minimum 14px, most text 16px+
+- Progress shown as friendly words, not percentages (or both)
+- Timer is always visible
+```
+
+---
+
+### SCREEN 12 — Share & Import Flow
+
+**Mode:** Standard | **Layout:** Desktop 1440px
+
+```
+ZOOM IN — Share Collection Modal + Import Preview Page
+
+PART A — Share Modal (modal on collection detail page):
+MODAL (500px wide):
+- "Share 'Physics Fundamentals'" title
+- Three visibility options (radio cards):
+  * "View only link" — anyone with link can view (selected, indigo)
+  * "Allow import" — anyone can import this collection
+  * "Organization members only" — restricted (grayed, org feature)
+- Expiry setting: "Link expires:" [Never | 7 days | 30 days]
+- Max uses: "Maximum uses:" [Unlimited | 10 | 25 | 100]
+- Generated link box: "https://edustream.app/share/abc123def456" 
+  Full-width input with "Copy Link" indigo button right
+- QR Code: small QR code displayed below
+- "Stats: 3 uses · Created 2 days ago" gray text
+- "Revoke Link" red ghost button bottom left | "Done" indigo button bottom right
+
+PART B — Import Preview Page (full page, /share/abc123def456):
+PUBLIC PAGE (no sidebar — public-facing):
+HEADER: EduStream logo (centered) + "Sign in" button top right
+
+IMPORT HERO (white card, max-width 700px, centered):
+- Collection thumbnail mosaic (320px × 180px)
+- "Physics Fundamentals" title (24px bold)
+- Shared by: "abu · Verified Educator ✓" with avatar
+- Stats: "12 videos · 4h 30m · Public collection"
+- Tags: physics, science, university
+- Video list preview (first 5 videos, collapsed rest with "Show 7 more"):
+  Compact list: thumbnail + title + duration
+- "Import Collection" large indigo CTA button
+- Below: "Create a free account to import" if not signed in
+- "This collection is shared read-only. You will get your own copy." gray info text
+
+CONSTRAINTS:
+- Import page must work as a public, sign-in-free preview
+- Collection preview should show enough to entice import
+- Privacy notice must be visible
+```
+
+---
+
+### SCREEN 13 — Mobile Dashboard (Responsive)
+
+**Mode:** Pro | **Layout:** Mobile 390px** (iPhone 15 Pro size)
+
+```
+ZOOM OUT:
+Same user, same dashboard, but on mobile. Must work perfectly on 390px wide screen.
+Navigation moves to bottom tab bar. Sidebar disappears.
+
+ZOOM IN — Mobile Dashboard
+
+LAYOUT CHANGE:
+- NO sidebar
+- BOTTOM TAB BAR (60px, white, top border, safe area padding):
+  Icons: Home | Explore | Add (+) | History | Profile
+  Center "+" button: larger, indigo circle, elevated — primary action (add video)
+  Active tab: indigo icon + small indigo dot indicator
+
+TOP BAR (white, safe area top, 56px):
+- "EduStream" logo left
+- Search icon right (opens full-screen search)
+- Notification bell + avatar row
+
+CONTENT (scrollable, #F8FAFC):
+
+Greeting: "Good morning, Abu 👋" (22px)
+Streak pill: "🔥 7 day streak" — amber, small
+
+HORIZONTAL SCROLL SECTIONS (like Netflix rows):
+Each section: title + "See all" link, then cards in horizontal scroll
+
+"Continue Watching" row:
+Video cards: 200px wide, 16:9 thumbnail, title (2-line), progress bar
+Cards partially cut off on right to indicate scroll
+
+"My Collections" row:
+Collection cards: 160px wide, square thumbnail, title, video count
+
+"Recommended" row:
+Video cards: 200px wide
+
+ADD VIDEO FAB (floating action button):
+Large indigo circle (+) button, bottom right, above tab bar
+
+CONSTRAINTS:
+- Bottom tab bar replaces sidebar completely
+- All horizontal sections have swipeable cards
+- Touch targets minimum 44px
+- Font sizes 2px larger than desktop equivalent
+- Compact stat cards (2x2 grid instead of 4-in-a-row)
+```
+
+---
+
+### SCREEN 14 — Onboarding Flow (3 Steps)
+
+**Mode:** Pro | **Layout:** Desktop 1440px
+
+```
+ZOOM IN — Onboarding (3-step wizard)
+
+Show all 3 steps side by side or as separate screens:
+
+STEP 1 — "Welcome to EduStream" (full-screen overlay on first login):
+Centered card (600px wide, white, deep shadow):
+- Top: EduStream logo large
+- Headline: "What brings you to EduStream?" (22px bold)
+- Subtitle: "We'll personalize your experience"
+- 3 large option cards (full width, click to select):
+  🎓 "I'm a student learning on my own"
+  👨‍👩‍👧 "I'm a parent managing my child's learning"
+  🏫 "I'm from an educational organization"
+- Selected state: indigo border + light indigo bg + indigo checkmark
+- "Continue →" indigo button (disabled until selected)
+- "Skip setup" gray link bottom
+
+STEP 2 — "What do you want to learn?" 
+- Headline: "Pick your topics" (22px)
+- Subtitle: "Choose at least 2 topics to personalize recommendations"
+- Category grid (3 columns, pill/chip cards with emoji + label):
+  🔬 Science | 📐 Mathematics | 💻 Programming | 🌍 History |
+  🎨 Arts | 📖 Literature | 🧬 Biology | ⚗️ Chemistry |
+  🌌 Physics | 🗣️ Languages | 💰 Economics | 🧠 Psychology
+- Selected: indigo bg, white text, check icon
+- Counter: "2 selected (pick at least 2)" below grid
+- "Set Up My Library →" button
+
+STEP 3 — "Add your first video"
+- Headline: "Save your first video" (22px)
+- Subtitle: "Paste any YouTube or Vimeo link to get started"
+- Big URL input with large placeholder
+- Example links shown as clickable chips:
+  "Try: Khan Academy" | "MIT OpenCourseWare" | "3Blue1Brown"
+- Clicking a chip pre-fills the URL
+- "I'll do this later" gray link
+- "Add Video & Start Learning →" indigo button
+
+CONSTRAINTS:
+- Onboarding must be 3 steps max
+- Progress indicator at top (1 of 3, 2 of 3, 3 of 3) 
+- Skip options must be visible but not prominent
+- Each step must fit in a single viewport (no scrolling)
+```
+
+---
+
+## PART 4 — DESIGN.MD EXPORT + FIGMA WORKFLOW
+
+### Step 4.1 — Export DESIGN.md
+
+After your design system screen (Screen 0 from Part 1) is generated:
+
+1. In Stitch canvas, click the **"..."** menu (top right of canvas)
+2. Click **"Export DESIGN.md"**
+3. Save the file as `DESIGN.md` in your project root
+4. **Paste this DESIGN.md content** at the top of every subsequent Stitch prompt under a `[DESIGN SYSTEM]` section — this ensures visual consistency across all screens
+
+### Step 4.2 — Paste to Figma (After Each Screen)
+
+After each screen is generated and you're happy with it:
+1. Click **"Paste to Figma"** button in Stitch
+2. In Figma: `Ctrl+V` (or `Cmd+V`) — the design pastes as native Figma layers
+3. Organize Figma pages: one page per screen (Page: Dashboard, Page: Collections, etc.)
+4. Apply **Auto Layout** to all pasted frames for responsive prep
+5. Create a **Component Library page** in Figma with all cards, buttons, badges extracted from your screens
+
+### Step 4.3 — Prototype Linking in Stitch
+
+After generating all screens, use Stitch's **Prototype mode**:
+1. Click **"Prototype"** tab in Stitch
+2. Link: Sidebar "Dashboard" → Dashboard screen
+3. Link: "Collections" nav → Collections page
+4. Link: Collection card click → Collection Detail
+5. Link: Video card click → Watch Page
+6. Link: "Share" button → Share modal
+7. Click **"Play"** to preview the full interactive flow
+
+---
+
+## PART 5 — IMPLEMENTING IN NEXT.JS/TAILWIND
+
+### Step 5.1 — Extract Your Color Tokens
+
+After Stitch generates your design system, copy these values into your Tailwind config:
+
+```typescript
+// tailwind.config.ts
+theme: {
+  extend: {
+    colors: {
+      sidebar: '#0F172A',
+      'brand-50': '#EEF2FF',
+      'brand-500': '#6366F1',
+      'brand-600': '#4F46E5',
+      'surface': '#F8FAFC',
+      'card': '#FFFFFF',
+      'border': '#E2E8F0',
+      'text-primary': '#1E293B',
+      'text-secondary': '#64748B',
+      'text-muted': '#94A3B8',
+    },
+    fontFamily: {
+      sans: ['Inter', 'sans-serif'],
+      kids: ['Nunito', 'sans-serif'],
+    },
+    borderRadius: {
+      card: '12px',
+    },
+    boxShadow: {
+      card: '0 1px 3px rgba(0,0,0,0.08), 0 1px 2px rgba(0,0,0,0.04)',
+      'card-hover': '0 4px 12px rgba(0,0,0,0.10), 0 2px 4px rgba(0,0,0,0.06)',
+    },
+  },
+},
+```
+
+### Step 5.2 — Component Translation Priority Order
+
+Implement components from Stitch output in this order:
+
+```
+1. Layout shell (sidebar + topbar + main area) — ONE TIME
+2. VideoCard component — used everywhere
+3. CollectionCard component — used everywhere
+4. StatCard component — dashboard + analytics
+5. Badge component variants — everywhere
+6. SearchBar component — topbar + search page
+7. Individual pages using above components
+```
+
+### Step 5.3 — Stitch Code Output Usage
+
+Stitch generates HTML/CSS or component scaffolds. When copying:
+
+**DO:**
+- Copy the structural HTML as component skeleton
+- Copy color values, spacing values, font sizes exactly
+- Use as visual reference for Tailwind class values
+
+**DO NOT:**
+- Copy Stitch's CSS directly — convert to Tailwind classes
+- Use inline styles from Stitch — extract to Tailwind utilities
+- Use Stitch's JavaScript (it's basic) — rewrite with your Server Actions/hooks
+
+**Example conversion from Stitch HTML to Tailwind component:**
+```tsx
+// Stitch output (HTML):
+// <div style="background:#fff; border:1px solid #E2E8F0; border-radius:12px; padding:20px">
+
+// Your implementation (Tailwind):
+<div className="bg-white border border-border rounded-card p-5 shadow-card hover:shadow-card-hover transition-shadow">
+```
+
+### Step 5.4 — Video Card CSS Reference
+
+This is your most-used component. Implement it first, get it perfect:
+
+```tsx
+// features/videos/components/video-card.tsx
+export function VideoCard({ video, progress }: VideoCardProps) {
+  return (
+    <div className="group bg-white border border-border rounded-card overflow-hidden 
+                    shadow-card hover:shadow-card-hover hover:-translate-y-0.5 
+                    transition-all duration-200 cursor-pointer">
+      {/* Thumbnail */}
+      <div className="relative aspect-video bg-slate-100">
+        <Image src={video.thumbnailUrl} alt={video.title} fill className="object-cover" />
+        {/* Duration chip */}
+        <span className="absolute bottom-2 right-2 bg-black/80 text-white 
+                         text-[11px] font-mono px-1.5 py-0.5 rounded-full">
+          {formatDuration(video.duration)}
+        </span>
+        {/* Progress bar */}
+        {progress > 0 && (
+          <div className="absolute bottom-0 left-0 right-0 h-[3px] bg-slate-200">
+            <div className="h-full bg-brand-500" style={{ width: `${progress}%` }} />
+          </div>
+        )}
+      </div>
+      {/* Info */}
+      <div className="p-3">
+        <h3 className="text-[14px] font-semibold text-text-primary line-clamp-2 mb-1">
+          {video.title}
+        </h3>
+        <p className="text-[12px] text-text-secondary">{video.channelName}</p>
+      </div>
+    </div>
+  );
+}
+```
+
+### Step 5.5 — Sidebar Implementation Reference
+
+```tsx
+// components/shared/sidebar.tsx — key Tailwind classes from Stitch design
+const navItems = [
+  { href: '/dashboard', label: 'Dashboard', icon: LayoutDashboard, color: 'text-indigo-400' },
+  { href: '/collections', label: 'Collections', icon: LibraryBig, color: 'text-orange-400' },
+  // ...
+];
+
+// Active state classes:
+// "bg-indigo-500/10 border-l-[3px] border-indigo-500 text-white"
+// Inactive state:
+// "text-slate-400 hover:bg-white/5 hover:text-slate-200"
+```
+
+---
+
+## PART 6 — GENERATION ORDER & BUDGET MANAGEMENT
+
+### Recommended Generation Order (Budget: 200 Pro + 350 Standard)
+
+**Pro Mode Generations (use for these, in order):**
+1. Design System sheet (Screen 0)
+2. Dashboard (most complex, most important)
+3. Watch Page (most critical for product value)
+4. Collections List
+5. Collection Detail
+6. Analytics Page
+7. Kids Mode Dashboard (entirely different design language)
+8. Billing/Pricing Page (converts users)
+9. Mobile Dashboard
+10. Onboarding Flow
+
+**Standard Mode Generations (use for these):**
+- History Page
+- Search Page
+- Settings Page
+- Add Video Modal
+- Share/Import Flow
+- Error states, empty states, loading states
+- Color variants of cards
+- Any refinement/tweaks of above Pro screens
+
+### Tips to Maximize Generation Quality
+
+**Before hitting Generate:**
+1. Always paste your DESIGN.md first (ensures color/font consistency)
+2. Be specific about screen dimensions ("Desktop, 1440px")
+3. Give real data, not lorem ipsum (Stitch generates better with real content)
+4. Specify what NOT to include (constraints section) — Stitch will default to Material Design 3 which may not match your vision
+5. For complex screens, describe sections in top-to-bottom order
+
+**After generating:**
+1. If a section looks wrong, use "Edit this section" chat follow-up (don't regenerate the whole screen)
+2. Try "Make the sidebar darker and more minimal" as a refinement prompt
+3. Generate 2 variants for the Dashboard and Watch page, pick the better one
+
+---
+
+## PART 7 — DESIGN DECISIONS & CONSTRAINTS SUMMARY
+
+| Decision | What to Do | What NOT to Do |
+|---|---|---|
+| Primary color | Indigo (#6366F1) throughout | Do NOT use red (YouTube), blue-500 (generic) |
+| Sidebar | Always dark (#0F172A) | Do NOT make sidebar light or auto-collapse |
+| Background | #F8FAFC (off-white) | Do NOT use pure white (#FFF) for main bg |
+| Cards | White bg + subtle border + radius 12px | Do NOT use gray cards on gray bg |
+| Video progress | Always visible as thin bar on thumbnail | Do NOT hide progress behind hover |
+| Typography | Inter everywhere (adults), Nunito (kids) | Do NOT mix font families |
+| Recommendations | Restrained, section-based | Do NOT make it feel like infinite feed |
+| Kids Mode | Completely separate color system | Do NOT use adult design with "kid colors" sprinkled in |
+| Buttons | Icon + label (never icon-only for primary) | Do NOT hide primary actions |
+| Empty states | Custom illustration + specific message | Do NOT use generic "No data" text |
+
+---
+
+## QUICK REFERENCE — All Screens to Generate
+
+| # | Screen | Mode | Priority |
+|---|---|---|---|
+| 0 | Design System Sheet | Pro | FIRST — do before anything |
+| 1 | Dashboard | Pro | Critical |
+| 2 | Collections List | Pro | Critical |
+| 3 | Collection Detail | Pro | Critical |
+| 4 | Watch Page | Pro | Critical |
+| 5 | Search Results | Standard | High |
+| 6 | Analytics Page | Pro | High |
+| 7 | History Page | Standard | Medium |
+| 8 | Settings Page | Standard | Medium |
+| 9 | Billing/Pricing | Pro | High |
+| 10 | Add Video Modal | Standard | High |
+| 11 | Kids Dashboard | Pro | High |
+| 12 | Share/Import Flow | Standard | Medium |
+| 13 | Mobile Dashboard | Pro | High |
+| 14 | Onboarding (3 steps) | Pro | High |
+
+**Total: 14 screens — uses ~10 Pro + 5 Standard generations**
+(well within your monthly limits)
+
+---
+
+*Stitch URL: stitch.withgoogle.com | Use Pro (Experimental) mode for all critical screens*

@@ -1,52 +1,80 @@
-import { db, conversations, messages, apiKeys } from '@nimstudio/db';
-import { eq, desc, asc, isNull, and, ne, count } from 'drizzle-orm';
-import crypto from 'crypto';
-import OpenAI from 'openai';
-import { decrypt } from '../utils/crypto';
+import { db, conversations, messages, apiKeys } from "@nimstudio/db";
+import { eq, desc, asc, isNull, and, ne, count } from "drizzle-orm";
+import crypto from "crypto";
+import OpenAI from "openai";
+import { decrypt } from "../utils/crypto";
 
-export async function getRecentMessagesForPrompt(conversationId: string, windowSize: number, summarizedCount: number) {
-  const totalRes = await db.select({ value: count() })
+export async function getRecentMessagesForPrompt(
+  conversationId: string,
+  windowSize: number,
+  summarizedCount: number,
+) {
+  const totalRes = await db
+    .select({ value: count() })
     .from(messages)
-    .where(and(eq(messages.conversationId, conversationId), ne(messages.role, 'system')));
+    .where(
+      and(
+        eq(messages.conversationId, conversationId),
+        ne(messages.role, "system"),
+      ),
+    );
   const totalNonSystem = totalRes[0]?.value || 0;
 
-  const unsummarizedCount = Math.max(0, totalNonSystem - windowSize - summarizedCount);
-  
-  let unsummarizedMessages = [];
+  const unsummarizedCount = Math.max(
+    0,
+    totalNonSystem - windowSize - summarizedCount,
+  );
+
+  let unsummarizedMessages: any[] = [];
   if (unsummarizedCount > 0) {
-    unsummarizedMessages = await db.select({
-      role: messages.role,
-      content: messages.content
-    })
-    .from(messages)
-    .where(and(eq(messages.conversationId, conversationId), ne(messages.role, 'system')))
-    .orderBy(asc(messages.createdAt))
-    .limit(unsummarizedCount)
-    .offset(summarizedCount);
+    unsummarizedMessages = await db
+      .select({
+        role: messages.role,
+        content: messages.content,
+      })
+      .from(messages)
+      .where(
+        and(
+          eq(messages.conversationId, conversationId),
+          ne(messages.role, "system"),
+        ),
+      )
+      .orderBy(asc(messages.createdAt))
+      .limit(unsummarizedCount)
+      .offset(summarizedCount);
   }
 
   let windowedMessages = [];
   if (totalNonSystem > 0) {
-    const rawWindow = await db.select({
-      role: messages.role,
-      content: messages.content
-    })
-    .from(messages)
-    .where(and(eq(messages.conversationId, conversationId), ne(messages.role, 'system')))
-    .orderBy(desc(messages.createdAt))
-    .limit(windowSize);
-    
+    const rawWindow = await db
+      .select({
+        role: messages.role,
+        content: messages.content,
+      })
+      .from(messages)
+      .where(
+        and(
+          eq(messages.conversationId, conversationId),
+          ne(messages.role, "system"),
+        ),
+      )
+      .orderBy(desc(messages.createdAt))
+      .limit(windowSize);
+
     windowedMessages = rawWindow.reverse();
   }
 
   return {
     unsummarizedOutsideWindow: unsummarizedMessages,
-    windowedMessages: windowedMessages
+    windowedMessages: windowedMessages,
   };
 }
 
-
-export async function saveConversation(title: string = 'New Chat', projectId: string = 'default', modelId: string | null = null): Promise<string> {
+export async function saveConversation(
+  title: string = "New Chat",
+  projectId: string = "default",
+  modelId: string | null = null,
+): Promise<string> {
   const id = crypto.randomUUID();
   await db.insert(conversations).values({
     id,
@@ -58,26 +86,55 @@ export async function saveConversation(title: string = 'New Chat', projectId: st
 }
 
 export async function getConversationDetails(conversationId: string) {
-  const convo = await db.select({ projectId: conversations.projectId, modelId: conversations.modelId }).from(conversations).where(eq(conversations.id, conversationId)).limit(1);
+  const convo = await db
+    .select({
+      projectId: conversations.projectId,
+      modelId: conversations.modelId,
+    })
+    .from(conversations)
+    .where(eq(conversations.id, conversationId))
+    .limit(1);
   return convo[0] || null;
 }
 
-export async function getConversationProjectId(conversationId: string): Promise<string> {
-  const convo = await db.select({ projectId: conversations.projectId }).from(conversations).where(eq(conversations.id, conversationId)).limit(1);
-  return convo[0]?.projectId || 'default';
+export async function getConversationProjectId(
+  conversationId: string,
+): Promise<string> {
+  const convo = await db
+    .select({ projectId: conversations.projectId })
+    .from(conversations)
+    .where(eq(conversations.id, conversationId))
+    .limit(1);
+  return convo[0]?.projectId || "default";
 }
 
 export async function getConversationMemoryState(conversationId: string) {
-  const convo = await db.select({ summary: conversations.summary, summarizedCount: conversations.summarizedCount })
-    .from(conversations).where(eq(conversations.id, conversationId)).limit(1);
+  const convo = await db
+    .select({
+      summary: conversations.summary,
+      summarizedCount: conversations.summarizedCount,
+    })
+    .from(conversations)
+    .where(eq(conversations.id, conversationId))
+    .limit(1);
   return convo[0] || { summary: null, summarizedCount: 0 };
 }
 
-export async function getDecryptedApiKeyForProject(projectId: string): Promise<string> {
-  let keyRecord = await db.select().from(apiKeys).where(eq(apiKeys.projectId, projectId)).limit(1);
-  
+export async function getDecryptedApiKeyForProject(
+  projectId: string,
+): Promise<string> {
+  let keyRecord = await db
+    .select()
+    .from(apiKeys)
+    .where(eq(apiKeys.projectId, projectId))
+    .limit(1);
+
   if (keyRecord.length === 0) {
-    keyRecord = await db.select().from(apiKeys).where(isNull(apiKeys.projectId)).limit(1);
+    keyRecord = await db
+      .select()
+      .from(apiKeys)
+      .where(isNull(apiKeys.projectId))
+      .limit(1);
   }
 
   if (keyRecord.length > 0) {
@@ -85,10 +142,16 @@ export async function getDecryptedApiKeyForProject(projectId: string): Promise<s
     return decrypt(record.encryptedKey, record.iv, record.authTag);
   }
 
-  throw new Error('No NVIDIA API key found for this project or globally. Please add one in Settings.');
+  throw new Error(
+    "No NVIDIA API key found for this project or globally. Please add one in Settings.",
+  );
 }
 
-export async function saveMessage(conversationId: string, role: 'user' | 'assistant' | 'system', content: string) {
+export async function saveMessage(
+  conversationId: string,
+  role: "user" | "assistant" | "system",
+  content: string,
+) {
   const id = crypto.randomUUID();
   await db.insert(messages).values({
     id,
@@ -97,19 +160,23 @@ export async function saveMessage(conversationId: string, role: 'user' | 'assist
     content,
   });
 
-  await db.update(conversations)
+  await db
+    .update(conversations)
     .set({ updatedAt: new Date() })
     .where(eq(conversations.id, conversationId));
 }
 
-export async function generateConversationTitle(conversationId: string, userMessageContent: string) {
+export async function generateConversationTitle(
+  conversationId: string,
+  userMessageContent: string,
+) {
   try {
     const projectId = await getConversationProjectId(conversationId);
     const apiKey = await getDecryptedApiKeyForProject(projectId);
 
     const openai = new OpenAI({
       apiKey,
-      baseURL: 'https://integrate.api.nvidia.com/v1',
+      baseURL: "https://integrate.api.nvidia.com/v1",
     });
 
     const completion = await openai.chat.completions.create({
@@ -117,46 +184,55 @@ export async function generateConversationTitle(conversationId: string, userMess
       messages: [
         {
           role: "system",
-          content: "You are a helpful title generator."
+          content: "You are a helpful title generator.",
         },
         {
           role: "user",
-          content: `Generate a concise 3-to-5 word title for a conversation that starts with this user message: [${userMessageContent}]. Return only the title text, no quotes, no explanation.`
-        }
+          content: `Generate a concise 3-to-5 word title for a conversation that starts with this user message: [${userMessageContent}]. Return only the title text, no quotes, no explanation.`,
+        },
       ],
       temperature: 0.2,
       max_tokens: 20,
       stream: false,
     });
 
-    let generatedTitle = completion.choices[0]?.message?.content?.trim() || "New Chat";
-    
-    generatedTitle = generatedTitle.replace(/^["']|["']$/g, '');
+    let generatedTitle =
+      completion.choices[0]?.message?.content?.trim() || "New Chat";
 
-    await db.update(conversations)
+    generatedTitle = generatedTitle.replace(/^["']|["']$/g, "");
+
+    await db
+      .update(conversations)
       .set({ title: generatedTitle, updatedAt: new Date() })
       .where(eq(conversations.id, conversationId));
 
-    console.log(`[ChatService] Generated title for ${conversationId}: "${generatedTitle}"`);
+    // console.log(
+    //   `[ChatService] Generated title for ${conversationId}: "${generatedTitle}"`,
+    // );
   } catch (error) {
-    console.error(`[ChatService] Failed to generate title for conversation ${conversationId}:`, error);
+    console.error(
+      `[ChatService] Failed to generate title for conversation ${conversationId}:`,
+      error,
+    );
   }
 }
 
 export async function getRecentConversations(limitCount = 1000) {
-  return await db.select({
-    id: conversations.id,
-    title: conversations.title,
-    updatedAt: conversations.updatedAt,
-    projectId: conversations.projectId,
-  })
-  .from(conversations)
-  .orderBy(desc(conversations.updatedAt))
-  .limit(limitCount);
+  return await db
+    .select({
+      id: conversations.id,
+      title: conversations.title,
+      updatedAt: conversations.updatedAt,
+      projectId: conversations.projectId,
+    })
+    .from(conversations)
+    .orderBy(desc(conversations.updatedAt))
+    .limit(limitCount);
 }
 
 export async function renameConversation(id: string, newTitle: string) {
-  await db.update(conversations)
+  await db
+    .update(conversations)
     .set({ title: newTitle, updatedAt: new Date() })
     .where(eq(conversations.id, id));
 }
@@ -166,11 +242,12 @@ export async function deleteConversation(id: string) {
 }
 
 export async function getMessagesByConversationId(conversationId: string) {
-  return await db.select({
-    role: messages.role,
-    content: messages.content
-  })
-  .from(messages)
-  .where(eq(messages.conversationId, conversationId))
-  .orderBy(asc(messages.createdAt));
+  return await db
+    .select({
+      role: messages.role,
+      content: messages.content,
+    })
+    .from(messages)
+    .where(eq(messages.conversationId, conversationId))
+    .orderBy(asc(messages.createdAt));
 }

@@ -16,8 +16,8 @@ export function UserMessage({ content }: { content: string }) {
   }, [content]);
 
   return (
-    <div className="flex flex-col gap-xs">
-      <div className="flex items-center gap-sm text-on-surface-variant mb-xs">
+    <div className="flex flex-col gap-1">
+      <div className="flex items-center gap-sm text-on-surface-variant mb-1">
         <span className="material-symbols-outlined text-[16px]">person</span>
         <span className="font-label-caps text-label-caps uppercase">User</span>
       </div>

@@ -50,7 +50,7 @@ export const DocumentsService = {
     mimeType: string,
   ) {
     // 1. Run Python MarkItDown script
-    const pyScriptPath = path.join(__dirname, "../utils/document_converter.py");
+    const pyScriptPath = path.join(process.cwd(), "./document_converter.py");
     // We assume apps/server/venv/bin/python is available
     const pyEnv = path.join(__dirname, "../../venv/bin/python");
 

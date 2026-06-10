@@ -23,11 +23,29 @@ async function initSystemState() {
         updatedAt: new Date(),
       });
 
-      const existingModel = await db.select().from(models).where(eq(models.id, "deepseek-ai/deepseek-v4-flash"));
-      if (existingModel.length === 0) {
+      const existingModels = await db.select().from(models);
+      
+      const deepseekId = "deepseek-ai/deepseek-v4-flash";
+      const llamaId = "meta/llama-3.1-8b-instruct";
+
+      if (!existingModels.some(m => m.id === deepseekId)) {
         await db.insert(models).values({
-          id: "deepseek-ai/deepseek-v4-flash",
+          id: deepseekId,
           name: "DeepSeek V4 Flash",
+          provider: "nvidia",
+          isActive: true,
+          isSelected: false,
+          createdAt: new Date(),
+          updatedAt: new Date(),
+        });
+      } else {
+        await db.update(models).set({ isSelected: false, isActive: true }).where(eq(models.id, deepseekId));
+      }
+
+      if (!existingModels.some(m => m.id === llamaId)) {
+        await db.insert(models).values({
+          id: llamaId,
+          name: "Llama 3.1 8B Instruct",
           provider: "nvidia",
           isActive: true,
           isSelected: true,
@@ -35,7 +53,7 @@ async function initSystemState() {
           updatedAt: new Date(),
         });
       } else {
-        await db.update(models).set({ isSelected: true, isActive: true }).where(eq(models.id, "deepseek-ai/deepseek-v4-flash"));
+        await db.update(models).set({ isSelected: true, isActive: true }).where(eq(models.id, llamaId));
       }
 
       const coreRuleText = `You are NimStudio Core.

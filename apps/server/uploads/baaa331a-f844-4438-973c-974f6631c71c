@@ -1,0 +1,3 @@
+def greet(name):
+    """Greets the user by name."""
+    return 'Hello ' + name

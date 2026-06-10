@@ -3,14 +3,13 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
-    "web": "next build && next start",
-    "dev:web": "next build && next start",
-    "dev:server": "pnpm --filter @nimstudio/server dev",
-    "start:web": "next build && next start",
+    "build": "pnpm --filter @nimstudio/db build && pnpm --filter @nimstudio/server build && next build",
+    "start:web": "next start",
     "start:server": "pnpm --filter @nimstudio/server start",
-    "dev": "concurrently \"pnpm dev:web\" \"pnpm dev:server\"",
     "start": "concurrently \"pnpm start:web\" \"pnpm start:server\"",
-    "prod": "concurrently \"pnpm start:web\" \"pnpm start:server\""
+    "dev:web": "next dev",
+    "dev:server": "pnpm --filter @nimstudio/server dev",
+    "dev": "concurrently \"pnpm dev:web\" \"pnpm dev:server\""
   },
   "dependencies": {
     "@base-ui/react": "^1.5.0",

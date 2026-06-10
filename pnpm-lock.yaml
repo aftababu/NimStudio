@@ -108,6 +108,12 @@ importers:
       '@hono/node-server':
         specifier: ^1.10.0
         version: 1.19.14(hono@4.12.23)
+      '@nimstudio/db':
+        specifier: workspace:*
+        version: link:../../packages/db
+      drizzle-orm:
+        specifier: ^0.45.2
+        version: 0.45.2(@libsql/client@0.6.2)
       hono:
         specifier: ^4.2.0
         version: 4.12.23
@@ -139,6 +145,9 @@ importers:
       '@libsql/client':
         specifier: ^0.6.0
         version: 0.6.2
+      '@nimstudio/db':
+        specifier: workspace:*
+        version: 'link:'
       drizzle-orm:
         specifier: ^0.45.2
         version: 0.45.2(@libsql/client@0.6.2)
