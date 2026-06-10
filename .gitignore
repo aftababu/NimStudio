@@ -41,6 +41,7 @@ yarn-error.log*
 next-env.d.ts
 apps/server/node_modules
 apps/server/dist
+apps/server/venv
 apps/server/.env*
 apps/server/database.sqlite
 packages/db/database.sqlite
