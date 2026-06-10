@@ -3,7 +3,11 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
-    "build": "pnpm --filter @nimstudio/db build && pnpm --filter @nimstudio/server build && next build",
+    "db:push": "pnpm --filter @nimstudio/db db:push",
+    "build:db": "pnpm --filter @nimstudio/db build",
+    "build:server": "pnpm --filter @nimstudio/server build",
+    "build:web": "next build",
+    "build": "pnpm db:push && pnpm build:db && pnpm build:server && pnpm build:web",
     "start:web": "next start",
     "start:server": "pnpm --filter @nimstudio/server start",
     "start": "concurrently \"pnpm start:web\" \"pnpm start:server\"",

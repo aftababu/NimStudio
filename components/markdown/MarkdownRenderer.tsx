@@ -13,7 +13,13 @@ export const MarkdownRenderer = memo(function MarkdownRenderer({
   content,
 }: MarkdownRendererProps) {
   return (
-    <div className="prose prose-invert prose-p:leading-relaxed prose-pre:p-0 max-w-none break-words text-on-surface">
+    <div
+      className="prose prose-invert prose-p:leading-relaxed prose-pre:p-0 max-w-none break-words [--tw-prose-body:var(--color-on-surface)]
+    [--tw-prose-headings:var(--color-on-surface)]
+    [--tw-prose-bold:var(--color-on-surface)]
+    [--tw-prose-bullets:var(--color-on-surface)]
+    [--tw-prose-counters:var(--color-on-surface)] text-on-surface"
+    >
       <ReactMarkdown
         remarkPlugins={[remarkGfm, remarkMath]}
         rehypePlugins={[rehypeKatex]}
@@ -40,7 +46,7 @@ export const MarkdownRenderer = memo(function MarkdownRenderer({
             );
           },
           table: ({ children, ...props }) => (
-            <div className="overflow-x-auto my-6 rounded-lg border border-outline-variant">
+            <div className="overflow-x-auto my-6 rounded-lg border border-outline-variant ">
               <table
                 className="w-full text-left border-collapse m-0"
                 {...props}
@@ -85,6 +91,7 @@ export const MarkdownRenderer = memo(function MarkdownRenderer({
             </blockquote>
           ),
         }}
+        // className="text-on-surface"
       >
         {content}
       </ReactMarkdown>

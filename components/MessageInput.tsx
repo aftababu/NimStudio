@@ -91,7 +91,7 @@ export function MessageInput() {
     if (!textareaRef.current) return;
     const content = textareaRef.current.value.trim();
     if (isStreaming || isUploading) return;
-    
+
     if (!content) {
       setErrorAlert("Please enter some text or attach a file.");
       return;
@@ -183,12 +183,21 @@ export function MessageInput() {
         console.log("Generation stopped by user");
       } else {
         let displayError = error.message || "An unexpected error occurred";
-        
+
         // Sanitize ugly database errors
-        if (displayError.includes("Failed query") || displayError.includes("SQLITE_CONSTRAINT") || displayError.includes("FOREIGN KEY constraint")) {
-          displayError = "Something went wrong saving to the database. Please check your project configuration.";
-        } else if (displayError.includes("Failed to fetch") || displayError.includes("NetworkError")) {
-          displayError = "Unable to connect to the server. Is the backend running?";
+        if (
+          displayError.includes("Failed query") ||
+          displayError.includes("SQLITE_CONSTRAINT") ||
+          displayError.includes("FOREIGN KEY constraint")
+        ) {
+          displayError =
+            "Something went wrong saving to the database. Please check your project configuration.";
+        } else if (
+          displayError.includes("Failed to fetch") ||
+          displayError.includes("NetworkError")
+        ) {
+          displayError =
+            "Unable to connect to the server. Is the backend running?";
         }
 
         setErrorAlert(displayError);
@@ -211,7 +220,7 @@ export function MessageInput() {
   };
 
   return (
-    <div className="absolute bottom-0 left-0 w-full p-lg bg-gradient-to-t from-[#0A0A0A] via-[#0A0A0A] to-transparent pt-xl z-10">
+    <div className="absolute bottom-0 left-0 w-full p-lg bg-gradient-to-t from-surface via-surface-container-low to-transparent pt-xl z-10">
       <div className="max-w-3xl mx-auto relative">
         {errorAlert && (
           <div className="mb-2 px-md py-sm bg-error/10 border border-error/20 rounded-md flex items-center justify-between shadow-sm">
@@ -227,7 +236,7 @@ export function MessageInput() {
             </button>
           </div>
         )}
-        <div className="flex items-end gap-sm bg-[#171717] border border-[#262626] rounded-xl p-xs focus-within:border-primary-container transition-colors shadow-[0_4px_24px_rgba(0,0,0,0.6)]">
+        <div className="flex items-end gap-sm bg-surface border border-transparent rounded-xl p-xs focus-within:border-primary-container transition-colors shadow-[0_1px_6px_rgba(0,0,0,0.2)]">
           <input
             type="file"
             ref={fileInputRef}
@@ -238,7 +247,7 @@ export function MessageInput() {
             onClick={() => fileInputRef.current?.click()}
             disabled={isUploading || isStreaming}
             aria-label="Add attachment"
-            className="p-sm text-on-surface-variant hover:text-on-surface hover:bg-[#262626] rounded-lg transition-colors flex-shrink-0 disabled:opacity-50"
+            className="p-sm text-on-surface-variant hover:text-on-surface hover:bg-surface-container-high rounded-lg transition-colors flex-shrink-0 disabled:opacity-50"
           >
             {isUploading ? (
               <span className="material-symbols-outlined animate-spin">
@@ -261,7 +270,7 @@ export function MessageInput() {
             <button
               onClick={() => abortControllerRef.current?.abort()}
               aria-label="Stop generation"
-              className="pt-sm px-sm text-error hover:text-error-container bg-[#262626] hover:bg-[#333333] rounded-lg transition-colors flex-shrink-0 self-center"
+              className="cursor-pointer pt-sm px-sm text-error hover:text-error-container bg-surface-container-high hover:bg-surface-container-highest rounded-lg transition-colors flex-shrink-0 self-center"
             >
               <span className="material-symbols-outlined text-[20px]">
                 stop
@@ -272,7 +281,7 @@ export function MessageInput() {
               onClick={handleSubmit}
               disabled={isStreaming || isUploading}
               aria-label="Send message"
-              className="p-sm text-on-surface-variant hover:text-primary-container bg-[#262626] hover:bg-[#333333] rounded-lg transition-colors flex-shrink-0 mb-[2px] mr-[2px] disabled:opacity-50"
+              className="cursor-pointer p-sm text-on-surface-variant hover:text-primary-container bg-surface-container-high hover:bg-surface-container-highest rounded-lg transition-colors flex-shrink-0 mb-[2px] mr-[2px] disabled:opacity-50"
             >
               <span className="material-symbols-outlined text-[20px]">
                 arrow_upward

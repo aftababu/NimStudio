@@ -187,7 +187,7 @@ function SideNavBarContent() {
   const handleNewChat = (projectId: string) => {
     setActiveConversationId(null);
     setActiveProjectId(projectId);
-    window.history.pushState({}, "", "/");
+    router.push("/");
   };
 
   const toggleProject = (projectId: string) => {
@@ -287,7 +287,7 @@ function SideNavBarContent() {
       <div
         onClick={() => {
           setActiveConversationId(null);
-          window.history.pushState({}, "", "/");
+          router.push("/");
         }}
         className="py-2 px-4 border-b border-outline-variant flex justify-between items-center gap-sm cursor-pointer"
       >
@@ -416,8 +416,12 @@ function SideNavBarContent() {
           rel="noopener noreferrer"
           className="flex items-center gap-sm px-sm py-xs rounded-DEFAULT text-on-surface-variant hover:bg-surface-container-high transition-colors duration-150 border border-transparent"
         >
-          <span className="material-symbols-outlined text-[16px] flex-shrink-0">menu_book</span>
-          <span className="truncate text-[14px] font-medium">Documentation</span>
+          <span className="material-symbols-outlined text-[16px] flex-shrink-0">
+            menu_book
+          </span>
+          <span className="truncate text-[14px] font-medium">
+            Documentation
+          </span>
         </a>
         <Link
           className="flex items-center gap-sm px-sm py-xs rounded-DEFAULT text-on-surface-variant hover:bg-surface-container-high transition-colors duration-150 border border-transparent"

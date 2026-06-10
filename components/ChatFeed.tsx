@@ -8,8 +8,14 @@ import { ConversationNavigator } from "./chat/conversation-navigator";
 import { UserMessage } from "./chat/user-message";
 
 const MarkdownRenderer = dynamic(
-  () => import("./markdown/MarkdownRenderer").then((mod) => mod.MarkdownRenderer),
-  { ssr: false, loading: () => <div className="animate-pulse h-10 bg-surface-container-low rounded-md w-full opacity-50" /> }
+  () =>
+    import("./markdown/MarkdownRenderer").then((mod) => mod.MarkdownRenderer),
+  {
+    ssr: false,
+    loading: () => (
+      <div className="animate-pulse h-10 bg-surface-container-low rounded-md w-full opacity-50" />
+    ),
+  },
 );
 
 import { StreamingMessage } from "./chat/streaming-message";
@@ -28,7 +34,7 @@ export function ChatFeed() {
       activeConversationId: state.activeConversationId,
       setMessages: state.setMessages,
       setActiveMessageIndex: state.setActiveMessageIndex,
-    }))
+    })),
   );
   const [isLoadingMessages, setIsLoadingMessages] = useState(false);
   const [chatNotFound, setChatNotFound] = useState(false);
@@ -86,15 +92,19 @@ export function ChatFeed() {
 
   useEffect(() => {
     if (!scrollContainerRef.current) return;
-    
+
     const observer = new MutationObserver(() => {
       if (isAutoScrollEnabled && bottomRef.current) {
         bottomRef.current.scrollIntoView({ behavior: "auto" });
       }
     });
 
-    observer.observe(scrollContainerRef.current, { childList: true, subtree: true, characterData: true });
-    
+    observer.observe(scrollContainerRef.current, {
+      childList: true,
+      subtree: true,
+      characterData: true,
+    });
+
     // Also scroll immediately on mount or dependency change
     if (isAutoScrollEnabled && bottomRef.current) {
       bottomRef.current.scrollIntoView({ behavior: "auto" });
@@ -131,7 +141,8 @@ export function ChatFeed() {
     };
 
     // To handle multiple intersecting items, we keep track of their intersection ratios or just pick the top one.
-    let intersectingEntries: Map<Element, IntersectionObserverEntry> = new Map();
+    let intersectingEntries: Map<Element, IntersectionObserverEntry> =
+      new Map();
 
     const callback: IntersectionObserverCallback = (entries) => {
       entries.forEach((entry) => {
@@ -146,7 +157,9 @@ export function ChatFeed() {
         // Prevent observer from overriding the state during a programmatic scroll
         const isProgrammatic = useChatStore.getState().isProgrammaticScroll;
         if (isProgrammatic) {
-          console.log("[IntersectionObserver] Ignored update. State: programmatic scrolling active.");
+          console.log(
+            "[IntersectionObserver] Ignored update. State: programmatic scrolling active.",
+          );
           return;
         }
 
@@ -158,7 +171,7 @@ export function ChatFeed() {
 
         intersectingEntries.forEach((entry) => {
           const rect = entry.boundingClientRect;
-          
+
           // If the focal point is strictly inside this element, it wins unconditionally
           if (rect.top <= focalPointY && rect.bottom >= focalPointY) {
             bestEntry = entry;
@@ -167,7 +180,7 @@ export function ChatFeed() {
             // Otherwise, pick the one closest to the focal point
             const dist = Math.min(
               Math.abs(rect.top - focalPointY),
-              Math.abs(rect.bottom - focalPointY)
+              Math.abs(rect.bottom - focalPointY),
             );
             if (dist < minDistance) {
               minDistance = dist;
@@ -177,13 +190,16 @@ export function ChatFeed() {
         });
 
         if (bestEntry) {
-          const target = (bestEntry as IntersectionObserverEntry).target as HTMLElement;
+          const target = (bestEntry as IntersectionObserverEntry)
+            .target as HTMLElement;
           const indexStr = target.dataset.messageIndex;
           if (indexStr) {
             const parsedIndex = parseInt(indexStr, 10);
             const currentActive = useChatStore.getState().activeMessageIndex;
             if (currentActive !== parsedIndex) {
-              console.log(`[IntersectionObserver] Setting activeMessageId: ${parsedIndex} (ObserverSelected: ${parsedIndex})`);
+              console.log(
+                `[IntersectionObserver] Setting activeMessageId: ${parsedIndex} (ObserverSelected: ${parsedIndex})`,
+              );
               setActiveMessageIndex(parsedIndex);
             }
           }
@@ -192,7 +208,7 @@ export function ChatFeed() {
     };
 
     const observer = new IntersectionObserver(callback, options);
-    
+
     // Select all assistant message nodes
     const nodes = document.querySelectorAll("[data-message-index]");
     nodes.forEach((node) => observer.observe(node));
@@ -284,9 +300,7 @@ export function ChatFeed() {
               return null;
             })}
 
-          {isStreaming && (
-            <StreamingMessage messageIndex={messages.length} />
-          )}
+          {isStreaming && <StreamingMessage messageIndex={messages.length} />}
 
           <div ref={bottomRef} className="h-4" />
         </div>
@@ -296,7 +310,7 @@ export function ChatFeed() {
         <div className="absolute bottom-[140px] left-1/2 -translate-x-1/2 z-20">
           <button
             onClick={scrollToBottom}
-            className="flex items-center justify-center w-10 h-10 bg-surface-container-high border border-surface-container-highest hover:bg-surface-container-highest text-on-surface rounded-full shadow-[0_4px_24px_rgba(0,0,0,0.6)] transition-all"
+            className="flex items-center justify-center w-10 h-10 bg-surface-container-high border border-surface-container-highest hover:bg-surface-container-highest text-on-surface rounded-full shadow-[0_1px_6px_rgba(0,0,0,0.2)] transition-all"
             aria-label="Scroll to bottom"
           >
             <span className="material-symbols-outlined text-[20px]">

@@ -62,7 +62,7 @@ export const CodeBlock = memo(function CodeBlock({
             className="[&>pre]:!bg-transparent [&>pre]:!m-0 [&>pre]:!p-0"
           />
         ) : (
-          <pre className="!bg-transparent !m-0 !p-0 text-gray-300">
+          <pre className="!bg-transparent !m-0 !p-0 text-gray-400">
             <code>{value}</code>
           </pre>
         )}
