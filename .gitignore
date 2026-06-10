@@ -48,7 +48,7 @@ packages/db/database.sqlite
 packages/db/dist
 packages/db/node_modules
 packages/db/.env*
-apps/server/upload/*
+apps/server/uploads/*
 NVIDIA_AI_STUDIO_BLUEPRINT.md
 test-*.js
 .next
